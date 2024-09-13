@@ -33,18 +33,16 @@
   "id": 1,
   "email": "tao@example.com",
   "password": "1234",
-  "createdAt": "2024-09-14",
-  "updatedAt": "2024-09-14"
+  "createdAt": "2024-09-14 14:35:33",
+  "updatedAt": "2024-09-14 14:35:33"
 }
 ```
 
 ### Todo 생성
 
-> POST   
-> /api/todos
-
-> 제목을 입력하지 않을 경우 예외가 발생한다.
-> 생성 시 default 상태값은 '할일'을 갖는다.
+> [POST] /api/todos  
+> 제목을 입력하지 않을 경우 예외가 발생한다.  
+> 생성 시 default 상태값은 'TODO'를 갖는다.
 
 - #### RequestBody   
 ```json
@@ -62,46 +60,50 @@
   "title": "todo title",
   "content": "todo content",
   "status": "TODO",
-  "createdAt": "2024-09-14",
-  "updatedAt": "2024-09-14",
-  "user": {
+  "createdAt": "2024-09-14 14:35:33",
+  "updatedAt": "2024-09-14 14:35:33",
+  "member": {
     "id": 1,
     "email": "tao@example.com"
   }
 }
 ```
 
-### Todo 조회
+### Todo 검색
 
-> 목록 조회   
-> GET   
-> /api/todos
+> [GET] /api/todos?memberId=3&title=hello&status=TODO  
+> memberId 값이 존재하지 않으면 예외가 발생한다.   
+> title이 포함되어있는(like) todo를 응답한다.  
+> title은 nullable 할 수 있다. 
 
 - #### ResponseBody
-
 ```json
 {
-  "todos": [
+  "contents": [
     {
       "title": "todo title1",
-      "status": "TODO"
+      "status": "TODO",
+      "createdAt": "2024-09-14 14:35:33",
+      "updatedAt": "2024-09-14 14:35:33"
     },
     {
       "title": "todo title2",
-      "status": "DONE"
+      "status": "DONE",
+      "createdAt": "2024-09-14 14:35:33",
+      "updatedAt": "2024-09-14 14:35:33"
     },
     {
       "title": "todo title3",
-      "status": "DONE"
+      "status": "DONE",
+      "createdAt": "2024-09-14 14:35:33",
+      "updatedAt": "2024-09-14 14:35:33"
     }
   ]
 }
 ```
 
 > 상세 조회   
-> GET   
-> PathVariable   
-> /api/todos/{todoId}
+> [GET] /api/todos/{todoId}
 
 - #### ResponseBody
 
@@ -109,17 +111,17 @@
 {
   "title": "todo title",
   "content": "todo content",
-  "status": "TODO"
+  "status": "TODO",
+  "createdAt": "2024-09-14 14:35:33",
+  "updatedAt": "2024-09-14 14:35:33"
 }
 ```
 
 ### Todo 수정
 
-> PUT   
-> PathVariable   
-> /api/todos/{todoId}
-
+> [PUT] /api/todos/{todoId}  
 > 제목을 입력하지 않을 경우 예외가 발생한다.
+> content 값이 없으면 null로 업데이트한다.
 
 - #### RequestBody
 
@@ -139,16 +141,16 @@
   "title": "update title",
   "content": "todo content",
   "status": "TODO",
-  "updatedAt": "2024-09-15"
+  "createdAt": "2024-09-14 14:35:33",
+  "updatedAt": "2024-09-19 16:21:18"
 }
 ```
 
 ### Todo 상태 변경
 
-> PATCH   
-> PathVariable   
-> /api/todo/status/{todoId}
-
+> [PUT] /api/todos/status/{todoId}  
+> status 값이 없으면 예외가 발생한다.
+ 
 - #### RequestBody
 
 ```json
@@ -165,31 +167,5 @@
   "title": "todo title",
   "content": "todo content",
   "status": "DONE"
-}
-```
-
-### Todo 검색
-
-> GET   
-> Parameter   
-> /pai/todo?search=todo
-
-- #### ResponseBody
-```json
-{
-  "todos": [
-    {
-      "title": "todo title1",
-      "status": "TODO"
-    },
-    {
-      "title": "todo title2",
-      "status": "DONE"
-    },
-    {
-      "title": "todo title3",
-      "status": "CANCEL"
-    }
-  ]
 }
 ```
