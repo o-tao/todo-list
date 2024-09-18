@@ -3,6 +3,7 @@ package com.app.todolist.api.members;
 import com.app.todolist.api.members.dto.MemberRequest;
 import com.app.todolist.api.members.dto.MemberResponse;
 import com.app.todolist.domain.members.Member;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,7 +18,7 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping
-    public MemberResponse create(@RequestBody MemberRequest memberRequest) {
+    public MemberResponse create(@RequestBody @Valid MemberRequest memberRequest) {
         Member member = memberService.create(memberRequest.toEntity());
         return MemberResponse.of(member);
     }
