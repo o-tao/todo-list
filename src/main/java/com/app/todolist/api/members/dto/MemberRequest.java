@@ -4,9 +4,11 @@ import com.app.todolist.domain.members.Member;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class MemberRequest {
 
     @NotBlank(message = "이메일을 입력하세요.")
