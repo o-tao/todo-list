@@ -2,12 +2,10 @@ package com.app.todolist.api.members.dto;
 
 import com.app.todolist.domain.members.Member;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Getter
-@AllArgsConstructor
+@Setter
 @NoArgsConstructor
 public class MemberRequest {
 

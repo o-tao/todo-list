@@ -22,7 +22,9 @@ class MemberControllerTest {
     @DisplayName("아이디를 입력하지 않을 경우 예외가 발생한다.")
     public void idValidTest() {
         // given
-        MemberRequest memberRequest = new MemberRequest(null, "1234");
+        MemberRequest memberRequest = new MemberRequest();
+        memberRequest.setEmail(null);
+        memberRequest.setPassword("1234");
 
         // when
         Set<ConstraintViolation<MemberRequest>> violations = validator.validate(memberRequest);
@@ -38,7 +40,9 @@ class MemberControllerTest {
     @DisplayName("비밀번호를 입력하지 않을 경우 예외가 발생한다.")
     public void passwordValidTest() {
         // given
-        MemberRequest memberRequest = new MemberRequest("tao@exemple.com", null);
+        MemberRequest memberRequest = new MemberRequest();
+        memberRequest.setEmail("tao@exemple.com");
+        memberRequest.setPassword(null);
 
         // when
         Set<ConstraintViolation<MemberRequest>> violations = validator.validate(memberRequest);
