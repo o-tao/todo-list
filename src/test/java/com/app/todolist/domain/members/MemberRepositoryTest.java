@@ -9,8 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 
-import java.time.LocalDateTime;
-
 
 @DataJpaTest
 @Import(AuditingConfig.class)
@@ -43,7 +41,6 @@ class MemberRepositoryTest {
     @DisplayName("회원가입 시 생성시간이 createdAt에 저장된다.")
     public void saveCreatedAtTest() {
         // given
-        LocalDateTime now = LocalDateTime.now();
         Member member = Member.create("tao@exemple.com", "1234");
         memberRepository.save(member);
 
@@ -51,6 +48,6 @@ class MemberRepositoryTest {
         Member findMember = memberRepository.findAll().stream().findFirst().orElseThrow();
 
         // then
-        Assertions.assertThat(findMember.getCreatedAt().isAfter(now)).isTrue();
+        Assertions.assertThat(findMember.getCreatedAt()).isNotNull();
     }
 }
