@@ -1,6 +1,9 @@
 package com.app.todolist.api.members;
 
 import com.app.todolist.domain.members.Member;
+import com.app.todolist.domain.members.MemberRepository;
+import com.app.todolist.exception.ApplicationException;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +17,28 @@ class MemberServiceTest {
 
     @Autowired
     private MemberService memberService;
+    @Autowired
+    private MemberRepository memberRepository;
+
+    @AfterEach
+    public void clear() {
+        memberRepository.deleteAllInBatch();
+    }
+
+    @Test
+    @DisplayName("로그인 아이디와 비밀번호로 회원을 생성한다.")
+    public void CreateMemberTest() {
+        // given
+        Member member1 = Member.create("tao@exemple.com", "1234");
+        memberService.create(member1);
+
+        // when
+        Member findMember = memberRepository.findAll().stream().findFirst().orElseThrow();
+
+        // then
+        assertThat(findMember.getEmail()).isEqualTo(member1.getEmail());
+        assertThat(findMember.getPassword()).isEqualTo(member1.getPassword());
+    }
 
     @Test
     @DisplayName("로그인 아이디가 존재할 경우 예외가 발생한다.")
@@ -21,16 +46,14 @@ class MemberServiceTest {
         // given
         Member member1 = Member.create("tao@exemple.com", "1234");
         Member member2 = Member.create("tao@exemple.com", "1234");
-
-        // when
         memberService.create(member1);
 
+        // when
+        ApplicationException exception = assertThrows(ApplicationException.class, () -> memberService.create(member2));
+
         // then
-        IllegalStateException e = assertThrows(IllegalStateException.class, () -> memberService.create(member2));
-
-        assertThat(e.getClass()).isEqualTo(IllegalStateException.class);
-        assertThat(e.getMessage()).isEqualTo("이미 존재하는 회원입니다.");
-
+        assertThat(exception.getClass()).isEqualTo(ApplicationException.class);
+        assertThat(exception.getExceptionMessage()).isEqualTo("이미 가입된 이메일이 존재합니다.");
     }
 
 }
