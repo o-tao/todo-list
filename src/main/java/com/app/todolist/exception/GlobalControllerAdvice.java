@@ -16,7 +16,7 @@ import java.util.Map;
 public class GlobalControllerAdvice {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<TodoExceptionResponse> responseMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
+    public ResponseEntity<TodoExceptionResponse<Map<String, String>>> responseMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
         Map<String, String> error = new HashMap<>();
         exception.getAllErrors().forEach(
                 c -> error.put(((FieldError) c).getField(), c.getDefaultMessage()));
@@ -24,7 +24,7 @@ public class GlobalControllerAdvice {
     }
 
     @ExceptionHandler(ApplicationException.class)
-    public ResponseEntity<TodoExceptionResponse> responseApplicationException(ApplicationException exception) {
+    public ResponseEntity<TodoExceptionResponse<String>> responseApplicationException(ApplicationException exception) {
         TodoExceptionResponse<String> errorResult = TodoExceptionResponse.of(
                 LocalDateTime.now(), exception.getExceptionHttpStatus(), exception.getExceptionMessage());
         return new ResponseEntity<>(errorResult, exception.getExceptionHttpStatus());
