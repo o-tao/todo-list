@@ -50,4 +50,19 @@ class MemberRepositoryTest {
         // then
         Assertions.assertThat(findMember.getCreatedAt()).isNotNull();
     }
+
+    @Test
+    @DisplayName("이메일이 존재할 경우 existsByEmail이 true를 반환한다.")
+    public void ExistsByEmailTest() {
+        // given
+        Member member1 = Member.create("tao@exemple.com", "1234");
+        memberRepository.save(member1);
+        Member member2 = Member.create("tao@exemple.com", "1234");
+
+        // when
+        boolean exist = memberRepository.existsByEmail(member2.getEmail());
+
+        // then
+        Assertions.assertThat(exist).isTrue();
+    }
 }
