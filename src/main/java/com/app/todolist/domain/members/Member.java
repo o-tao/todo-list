@@ -11,10 +11,10 @@ import lombok.Getter;
 @Table(name = "members")
 public class Member extends BaseEntity {
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 100)
     private String email;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 60)
     private String password;
 
     public static Member create(String email, String password) {
