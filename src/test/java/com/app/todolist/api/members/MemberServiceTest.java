@@ -2,7 +2,7 @@ package com.app.todolist.api.members;
 
 import com.app.todolist.domain.members.Member;
 import com.app.todolist.domain.members.MemberRepository;
-import com.app.todolist.exception.ApplicationException;
+import com.app.todolist.exception.TodoApplicationException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -49,10 +49,10 @@ class MemberServiceTest {
         memberService.create(member1);
 
         // when
-        ApplicationException exception = assertThrows(ApplicationException.class, () -> memberService.create(member2));
+        TodoApplicationException exception = assertThrows(TodoApplicationException.class, () -> memberService.create(member2));
 
         // then
-        assertThat(exception.getClass()).isEqualTo(ApplicationException.class);
+        assertThat(exception.getClass()).isEqualTo(TodoApplicationException.class);
         assertThat(exception.getExceptionMessage()).isEqualTo("이미 가입된 이메일이 존재합니다.");
     }
 

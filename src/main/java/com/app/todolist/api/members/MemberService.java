@@ -2,8 +2,8 @@ package com.app.todolist.api.members;
 
 import com.app.todolist.domain.members.Member;
 import com.app.todolist.domain.members.MemberRepository;
-import com.app.todolist.exception.ApplicationException;
 import com.app.todolist.exception.ErrorCode;
+import com.app.todolist.exception.TodoApplicationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +20,7 @@ public class MemberService {
 
     public void validateMember(String email) {
         if (memberRepository.existsByEmail(email)) {
-            throw new ApplicationException(ErrorCode.DUPLICATED_MEMBER_ID);
+            throw new TodoApplicationException(ErrorCode.DUPLICATED_MEMBER_ID);
         }
     }
 

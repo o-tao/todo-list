@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @RequiredArgsConstructor
-public class ApplicationException extends RuntimeException {
+public class TodoApplicationException extends RuntimeException {
 
     private final ErrorCode errorCode;
 
