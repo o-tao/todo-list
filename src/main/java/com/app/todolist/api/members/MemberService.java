@@ -6,13 +6,16 @@ import com.app.todolist.exception.ErrorCode;
 import com.app.todolist.exception.TodoApplicationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class MemberService {
 
     private final MemberRepository memberRepository;
 
+    @Transactional
     public Member create(Member member) {
         validateMember(member.getEmail());
         return memberRepository.save(member);
