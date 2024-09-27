@@ -19,7 +19,8 @@
 > 로그인 아이디가 존재 할 경우 예외가 발생한다.   
 > 아이디, 비밀번호를 입력하지 않을 경우 예외가 발생한다.
 
-- #### RequestBody   
+- #### RequestBody
+
 ```json
 {
   "email": "tao@example.com",
@@ -27,12 +28,12 @@
 }
 ```
 
-- #### ResponseBody   
+- #### ResponseBody
+
 ```json
 {
   "id": 1,
   "email": "tao@example.com",
-  "password": "1234",
   "createdAt": "2024-09-14 14:35:33",
   "updatedAt": "2024-09-14 14:35:33"
 }
@@ -44,7 +45,8 @@
 > 제목을 입력하지 않을 경우 예외가 발생한다.  
 > 생성 시 default 상태값은 'TODO'를 갖는다.
 
-- #### RequestBody   
+- #### RequestBody
+
 ```json
 {
   "userId": 1,
@@ -53,7 +55,8 @@
 }
 ```
 
-- #### ResponseBody   
+- #### ResponseBody
+
 ```json
 {
   "id": 1,
@@ -74,9 +77,10 @@
 > [GET] /api/todos?memberId=3&title=hello&status=TODO  
 > memberId 값이 존재하지 않으면 예외가 발생한다.   
 > title이 포함되어있는(like) todo를 응답한다.  
-> title은 nullable 할 수 있다. 
+> title은 nullable 할 수 있다.
 
 - #### ResponseBody
+
 ```json
 {
   "contents": [
@@ -150,7 +154,7 @@
 
 > [PUT] /api/todos/status/{todoId}  
 > status 값이 없으면 예외가 발생한다.
- 
+
 - #### RequestBody
 
 ```json
