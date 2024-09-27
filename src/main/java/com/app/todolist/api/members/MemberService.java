@@ -16,7 +16,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public Member create(Member member) {
+    public Member save(Member member) {
         validateMember(member.getEmail());
         return memberRepository.save(member);
     }

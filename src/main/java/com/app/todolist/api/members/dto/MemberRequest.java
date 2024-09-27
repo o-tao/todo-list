@@ -18,6 +18,6 @@ public class MemberRequest {
     private String password;
 
     public Member toEntity() {
-        return Member.create(email, password);
+        return Member.save(email, password);
     }
 }

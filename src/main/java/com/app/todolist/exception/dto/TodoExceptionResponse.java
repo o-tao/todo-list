@@ -1,4 +1,4 @@
-package com.app.todolist.api.dto;
+package com.app.todolist.exception.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;

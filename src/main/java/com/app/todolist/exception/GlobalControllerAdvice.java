@@ -1,6 +1,6 @@
 package com.app.todolist.exception;
 
-import com.app.todolist.api.dto.TodoExceptionResponse;
+import com.app.todolist.exception.dto.TodoExceptionResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
