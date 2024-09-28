@@ -15,7 +15,7 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
 
-    public Member save(Member member) {
+    public Member create(Member member) {
         validateMember(member.getEmail());
         return memberRepository.save(member);
     }
