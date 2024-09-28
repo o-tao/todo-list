@@ -1,9 +1,8 @@
 package com.app.todolist.domain.todos;
 
 import com.app.todolist.domain.BaseEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import com.app.todolist.domain.members.Member;
+import jakarta.persistence.*;
 import lombok.Getter;
 
 @Entity
@@ -16,10 +15,18 @@ public class Todo extends BaseEntity {
 
     private String content;
 
-    public static Todo save(String title, String content) {
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
+
+    public static Todo create(Member member, String title, String content) {
         Todo todo = new Todo();
         todo.title = title;
         todo.content = content;
+        todo.status = Status.TODO;
         return todo;
     }
 }

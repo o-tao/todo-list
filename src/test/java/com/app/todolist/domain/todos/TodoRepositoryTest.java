@@ -11,22 +11,22 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 class TodoRepositoryTest {
 
     @Autowired
-    private TodosRepository todosRepository;
+    private TodoRepository todoRepository;
 
     @AfterEach
     public void clear() {
-        todosRepository.deleteAllInBatch();
+        todoRepository.deleteAllInBatch();
     }
 
     @Test
     @DisplayName("board에 저장한 값을 조회할 수 있다")
-    public void saveTest() {
+    public void createTest() {
         //given
-        Todo todo = Todo.save("todo-list", "hello");
-        todosRepository.save(todo);
+        Todo todo = Todo.create("todo-list", "hello");
+        todoRepository.save(todo);
 
         //when
-        Todo findTodo = todosRepository.findAll().stream().findFirst().orElseThrow();
+        Todo findTodo = todoRepository.findAll().stream().findFirst().orElseThrow();
 
         //then
         Assertions.assertThat(findTodo.getTitle()).isEqualTo(todo.getTitle());
@@ -38,11 +38,11 @@ class TodoRepositoryTest {
     @DisplayName("board에 저장한 시간이 createdAt에 저장된다")
     public void createdAtTest() {
         //given
-        Todo todo = Todo.save("todo-list", "hello");
-        todosRepository.save(todo);
+        Todo todo = Todo.create("todo-list", "hello");
+        todoRepository.save(todo);
 
         //when
-        Todo findTodo = todosRepository.findAll().stream().findFirst().orElseThrow();
+        Todo findTodo = todoRepository.findAll().stream().findFirst().orElseThrow();
 
         //then
         Assertions.assertThat(findTodo.getCreatedAt()).isNotNull();
@@ -53,11 +53,11 @@ class TodoRepositoryTest {
     @DisplayName("board에 저장한 시간이 updatedAt에 저장된다")
     public void updatedAtTest() {
         //given
-        Todo todo = Todo.save("todo-list", "hello");
-        todosRepository.save(todo);
+        Todo todo = Todo.create("todo-list", "hello");
+        todoRepository.save(todo);
 
         //when
-        Todo findTodo = todosRepository.findAll().stream().findFirst().orElseThrow();
+        Todo findTodo = todoRepository.findAll().stream().findFirst().orElseThrow();
 
         //then
         Assertions.assertThat(findTodo.getUpdatedAt()).isNotNull();
