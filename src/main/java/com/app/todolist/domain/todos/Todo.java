@@ -27,6 +27,7 @@ public class Todo extends BaseEntity {
         todo.title = title;
         todo.content = content;
         todo.status = Status.TODO;
+        todo.member = member;
         return todo;
     }
 }
