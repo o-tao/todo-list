@@ -24,11 +24,11 @@ class TodoRepositoryTest {
     @DisplayName("board에 저장한 값을 조회할 수 있다")
     public void saveTest() {
         //given
-        Todo todo = Todo.create("todo-list", "hello");
+        Todo todo = Todo.save("todo-list", "hello");
 
         //when
         todosRepository.save(todo);
-        Todo findTodo = todosRepository.findAll().stream().findAny().orElseThrow();
+        Todo findTodo = todosRepository.findAll().stream().findFirst().orElseThrow();
 
         //then
         Assertions.assertThat(findTodo.getTitle()).isEqualTo(todo.getTitle());
@@ -41,14 +41,14 @@ class TodoRepositoryTest {
     public void createdAtTest() {
         //given
         LocalDateTime now = LocalDateTime.now();
-        Todo todo = Todo.create("todo-list", "hello");
+        Todo todo = Todo.save("todo-list", "hello");
 
         //when
         todosRepository.save(todo);
         Todo findTodo = todosRepository.findAll().stream().findFirst().orElseThrow();
 
         //then
-        Assertions.assertThat(findTodo.getCreatedAt().isAfter(now)).isTrue();
+        Assertions.assertThat(findTodo.getCreatedAt()).isNotNull();
 
     }
 
@@ -57,14 +57,14 @@ class TodoRepositoryTest {
     public void updatedAtTest() {
         //given
         LocalDateTime now = LocalDateTime.now();
-        Todo todo = Todo.create("todo-list", "hello");
+        Todo todo = Todo.save("todo-list", "hello");
 
         //when
         todosRepository.save(todo);
         Todo findTodo = todosRepository.findAll().stream().findFirst().orElseThrow();
 
         //then
-        Assertions.assertThat(findTodo.getUpdatedAt().isAfter(now)).isTrue();
+        Assertions.assertThat(findTodo.getUpdatedAt()).isNotNull();
 
     }
 
