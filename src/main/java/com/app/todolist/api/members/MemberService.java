@@ -10,12 +10,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+@Transactional
 public class MemberService {
 
     private final MemberRepository memberRepository;
 
-    @Transactional
     public Member save(Member member) {
         validateMember(member.getEmail());
         return memberRepository.save(member);
