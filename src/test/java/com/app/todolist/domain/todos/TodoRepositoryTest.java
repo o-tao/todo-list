@@ -1,5 +1,7 @@
 package com.app.todolist.domain.todos;
 
+import com.app.todolist.domain.members.Member;
+import com.app.todolist.domain.members.MemberRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
@@ -12,6 +14,8 @@ class TodoRepositoryTest {
 
     @Autowired
     private TodoRepository todoRepository;
+    @Autowired
+    private MemberRepository memberRepository;
 
     @AfterEach
     public void clear() {
@@ -19,10 +23,13 @@ class TodoRepositoryTest {
     }
 
     @Test
-    @DisplayName("board에 저장한 값을 조회할 수 있다")
+    @DisplayName("회원이 저장한 Todo를 조회할 수 있다.")
     public void createTest() {
         //given
-        Todo todo = Todo.create("todo-list", "hello");
+        Member member = Member.create("tao@exemple.com", "1234");
+        memberRepository.save(member);
+
+        Todo todo = Todo.create(member, "todo-list", "hello");
         todoRepository.save(todo);
 
         //when
@@ -35,10 +42,12 @@ class TodoRepositoryTest {
     }
 
     @Test
-    @DisplayName("board에 저장한 시간이 createdAt에 저장된다")
+    @DisplayName("회원이 저장한 Todo의 시간이 createdAt에 저장된다.")
     public void createdAtTest() {
         //given
-        Todo todo = Todo.create("todo-list", "hello");
+        Member member = Member.create("tao@exemple.com", "1234");
+        memberRepository.save(member);
+        Todo todo = Todo.create(member, "todo-list", "hello");
         todoRepository.save(todo);
 
         //when
@@ -50,10 +59,12 @@ class TodoRepositoryTest {
     }
 
     @Test
-    @DisplayName("board에 저장한 시간이 updatedAt에 저장된다")
+    @DisplayName("회원이 저장한 Todo의 시간이 updatedAt에 저장된다.")
     public void updatedAtTest() {
         //given
-        Todo todo = Todo.create("todo-list", "hello");
+        Member member = Member.create("tao@exemple.com", "1234");
+        memberRepository.save(member);
+        Todo todo = Todo.create(member, "todo-list", "hello");
         todoRepository.save(todo);
 
         //when
@@ -63,6 +74,4 @@ class TodoRepositoryTest {
         Assertions.assertThat(findTodo.getUpdatedAt()).isNotNull();
 
     }
-
-
 }
