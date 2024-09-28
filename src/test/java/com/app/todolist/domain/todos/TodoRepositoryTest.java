@@ -7,8 +7,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import java.time.LocalDateTime;
-
 @DataJpaTest
 class TodoRepositoryTest {
 
@@ -25,9 +23,9 @@ class TodoRepositoryTest {
     public void saveTest() {
         //given
         Todo todo = Todo.save("todo-list", "hello");
+        todosRepository.save(todo);
 
         //when
-        todosRepository.save(todo);
         Todo findTodo = todosRepository.findAll().stream().findFirst().orElseThrow();
 
         //then
@@ -40,11 +38,10 @@ class TodoRepositoryTest {
     @DisplayName("board에 저장한 시간이 createdAt에 저장된다")
     public void createdAtTest() {
         //given
-        LocalDateTime now = LocalDateTime.now();
         Todo todo = Todo.save("todo-list", "hello");
+        todosRepository.save(todo);
 
         //when
-        todosRepository.save(todo);
         Todo findTodo = todosRepository.findAll().stream().findFirst().orElseThrow();
 
         //then
@@ -56,11 +53,10 @@ class TodoRepositoryTest {
     @DisplayName("board에 저장한 시간이 updatedAt에 저장된다")
     public void updatedAtTest() {
         //given
-        LocalDateTime now = LocalDateTime.now();
         Todo todo = Todo.save("todo-list", "hello");
+        todosRepository.save(todo);
 
         //when
-        todosRepository.save(todo);
         Todo findTodo = todosRepository.findAll().stream().findFirst().orElseThrow();
 
         //then
