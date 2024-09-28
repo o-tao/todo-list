@@ -22,6 +22,8 @@ public class TodoResponse {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime updatedAt;
 
+    private TodoMemberInfo member;
+
     public static TodoResponse of(Todo todo) {
         return TodoResponse.builder()
                 .id(todo.getId())
@@ -30,6 +32,18 @@ public class TodoResponse {
                 .status(todo.getStatus().getType())
                 .createdAt(todo.getCreatedAt())
                 .updatedAt(todo.getUpdatedAt())
+                .member(new TodoMemberInfo(todo.getMember().getId(), todo.getMember().getEmail()))
                 .build();
+    }
+
+    @Getter
+    public static class TodoMemberInfo {
+        private final Long id;
+        private final String email;
+
+        public TodoMemberInfo(Long id, String email) {
+            this.id = id;
+            this.email = email;
+        }
     }
 }
