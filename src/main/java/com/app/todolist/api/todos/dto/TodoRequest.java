@@ -11,7 +11,9 @@ import lombok.Setter;
 public class TodoRequest {
 
     private Long memberId;
+
     @NotBlank(message = "제목을 입력하세요.")
     private String title;
+    
     private String content;
 }

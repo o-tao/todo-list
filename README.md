@@ -17,7 +17,8 @@
 
 > [POST] /api/members   
 > 로그인 아이디가 존재 할 경우 예외가 발생한다.   
-> 아이디, 비밀번호를 입력하지 않을 경우 예외가 발생한다.
+> 아이디, 비밀번호를 입력하지 않을 경우 예외가 발생한다.   
+> 아이디를 이메일 형식으로 입력하지 않을경우 예외가 발생한다.
 
 - #### RequestBody
 
@@ -42,14 +43,15 @@
 ### Todo 생성
 
 > [POST] /api/todos  
-> 제목을 입력하지 않을 경우 예외가 발생한다.  
-> 생성 시 default 상태값은 'TODO'를 갖는다.
+> 제목을 입력하지 않을 경우 예외가 발생한다.   
+> 존재하지 않는 회원이 Todo를 생성할 경우 예외가 발생한다.   
+> 생성 시 default 상태값은 '할일'를 갖는다.
 
 - #### RequestBody
 
 ```json
 {
-  "userId": 1,
+  "memberId": 1,
   "title": "todo title",
   "content": "todo content"
 }
@@ -62,7 +64,7 @@
   "id": 1,
   "title": "todo title",
   "content": "todo content",
-  "status": "TODO",
+  "status": "할일",
   "createdAt": "2024-09-14 14:35:33",
   "updatedAt": "2024-09-14 14:35:33",
   "member": {
