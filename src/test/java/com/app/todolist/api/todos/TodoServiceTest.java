@@ -62,7 +62,7 @@ class TodoServiceTest {
 
         // when
         TodoApplicationException exception = assertThrows(TodoApplicationException.class,
-                () -> todoService.createTodo(1L, title, content));
+                () -> todoService.createTodo(-1L, title, content));
 
         // then
         assertThat(exception.getClass()).isEqualTo(TodoApplicationException.class);
