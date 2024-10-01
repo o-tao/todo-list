@@ -10,6 +10,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -30,7 +31,8 @@ class TodoServiceTest {
     }
 
     @Test
-    @DisplayName("생성된 회원이 정상적으로 Todo를 생성할 수 있다.")
+    @Transactional
+    @DisplayName("회원이 Todo를 생성한다.")
     public void createTodoTest() {
         // given
         Member member = Member.create("tao@exemple.com", "1234");
@@ -44,6 +46,9 @@ class TodoServiceTest {
 
         // then
         Todo findTodo = todoRepository.findAll().stream().findFirst().orElseThrow();
+        Member findMember = findTodo.getMember();
+        assertThat(member.getEmail()).isEqualTo(findMember.getEmail());
+        assertThat(member.getPassword()).isEqualTo(findMember.getPassword());
         assertThat(findTodo.getTitle()).isEqualTo(createTodo.getTitle());
         assertThat(findTodo.getContent()).isEqualTo(createTodo.getContent());
     }
