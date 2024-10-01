@@ -36,6 +36,9 @@ class TodoRepositoryTest {
         Todo findTodo = todoRepository.findAll().stream().findFirst().orElseThrow();
 
         //then
+        Member findMember = findTodo.getMember();
+        Assertions.assertThat(member.getEmail()).isEqualTo(findMember.getEmail());
+        Assertions.assertThat(member.getPassword()).isEqualTo(findMember.getPassword());
         Assertions.assertThat(findTodo.getTitle()).isEqualTo(todo.getTitle());
         Assertions.assertThat(findTodo.getContent()).isEqualTo(todo.getContent());
 
