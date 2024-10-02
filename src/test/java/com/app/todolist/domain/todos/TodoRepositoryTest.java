@@ -9,6 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import java.util.List;
+
 @DataJpaTest
 class TodoRepositoryTest {
 
@@ -23,24 +25,27 @@ class TodoRepositoryTest {
     }
 
     @Test
-    @DisplayName("회원이 저장한 Todo를 조회할 수 있다.")
-    public void createTest() {
+    @DisplayName("저장한 모든 Todo를 조회할 수 있다.")
+    public void findByAllTest() {
         //given
         Member member = Member.create("tao@exemple.com", "1234");
         memberRepository.save(member);
 
-        Todo todo = Todo.create(member, "todo-list", "hello");
-        todoRepository.save(todo);
+        Todo todo1 = Todo.create(member, "todo-list", "hello");
+        Todo todo2 = Todo.create(member, "todo-list", "hello");
+        Todo todo3 = Todo.create(member, "todo-list", "hello");
+        todoRepository.save(todo1);
+        todoRepository.save(todo2);
+        todoRepository.save(todo3);
 
         //when
-        Todo findTodo = todoRepository.findAll().stream().findFirst().orElseThrow();
+        List<Todo> findTodo = todoRepository.findAll();
 
         //then
-        Member findMember = findTodo.getMember();
+        Member findMember = findTodo.getLast().getMember();
         Assertions.assertThat(member.getEmail()).isEqualTo(findMember.getEmail());
         Assertions.assertThat(member.getPassword()).isEqualTo(findMember.getPassword());
-        Assertions.assertThat(findTodo.getTitle()).isEqualTo(todo.getTitle());
-        Assertions.assertThat(findTodo.getContent()).isEqualTo(todo.getContent());
+        Assertions.assertThat(findTodo).hasSize(3);
 
     }
 
