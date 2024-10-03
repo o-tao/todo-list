@@ -64,7 +64,7 @@
   "id": 1,
   "title": "todo title",
   "content": "todo content",
-  "status": "할일",
+  "status": "TODO",
   "createdAt": "2024-09-14 14:35:33",
   "updatedAt": "2024-09-14 14:35:33",
   "member": {
