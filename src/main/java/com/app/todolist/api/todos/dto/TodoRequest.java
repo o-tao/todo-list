@@ -1,6 +1,8 @@
 package com.app.todolist.api.todos.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,6 +13,8 @@ import lombok.Setter;
 @NoArgsConstructor
 public class TodoRequest {
 
+    @NotNull(message = "회원 ID를 입력하세요.")
+    @Positive(message = "회원 ID는 양수여야 합니다.")
     private Long memberId;
 
     @Size(min = 2, max = 30, message = "제목은 2자리 이상, 30자리 이하 입력이 가능합니다.")
