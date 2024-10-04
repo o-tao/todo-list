@@ -15,7 +15,7 @@ public class TodoResponse {
     private Long id;
     private String title;
     private String content;
-    private String status;
+    private Status status;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdAt;
@@ -30,7 +30,7 @@ public class TodoResponse {
                 .id(todo.getId())
                 .title(todo.getTitle())
                 .content(todo.getContent())
-                .status(Status.TODO.name())
+                .status(Status.TODO)
                 .createdAt(todo.getCreatedAt())
                 .updatedAt(todo.getUpdatedAt())
                 .member(new TodoMemberInfo(todo.getMember().getId(), todo.getMember().getEmail()))
