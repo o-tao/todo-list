@@ -23,7 +23,7 @@ class MemberRequestTest {
     }
 
     @Test
-    @DisplayName("아이디를 입력하지 않을 경우 예외가 발생한다.")
+    @DisplayName("이메일을 입력하지 않을 경우 예외가 발생한다.")
     public void idValidTest() {
         // given
         memberRequest.setEmail(null);
@@ -40,7 +40,7 @@ class MemberRequestTest {
     }
 
     @Test
-    @DisplayName("아이디를 입력할 경우 예외가 발생하지 않는다.")
+    @DisplayName("이메일을 입력할 경우 예외가 발생하지 않는다.")
     public void idSuccessTest() {
         // given
         memberRequest.setEmail("tao@exemple.com");
