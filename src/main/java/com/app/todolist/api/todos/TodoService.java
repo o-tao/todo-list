@@ -21,7 +21,7 @@ public class TodoService {
 
     public Todo createTodo(Long memberId, String title, String content) {
         Member member = memberRepository.findById(memberId).orElseThrow(()
-                -> new TodoApplicationException(ErrorCode.NOT_EXISTED_EMAIL));
+                -> new TodoApplicationException(ErrorCode.MEMBER_NOT_FOUND));
         return todoRepository.save(Todo.create(member, title, content));
     }
 }
