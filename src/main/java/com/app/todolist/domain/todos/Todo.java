@@ -13,6 +13,7 @@ public class Todo extends BaseEntity {
     @Column(nullable = false, length = 30)
     private String title;
 
+    @Column(nullable = false, length = 250)
     private String content;
 
     @Enumerated(EnumType.STRING)

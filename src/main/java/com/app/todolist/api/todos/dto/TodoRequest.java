@@ -21,5 +21,7 @@ public class TodoRequest {
     @NotBlank(message = "제목을 입력하세요.")
     private String title;
 
+    @Size(max = 250, message = "내용은 250자리 이하 입력이 가능합니다.")
+    @NotNull(message = "내용을 입력하세요.")
     private String content;
 }
