@@ -1,5 +1,6 @@
 package com.app.todolist.domain.members;
 
+import com.app.todolist.domain.members.repository.MemberRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
