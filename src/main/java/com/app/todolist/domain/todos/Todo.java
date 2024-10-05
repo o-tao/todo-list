@@ -17,7 +17,7 @@ public class Todo extends BaseEntity {
     private String content;
 
     @Enumerated(EnumType.STRING)
-    private Status status;
+    private TodoStatus status;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
@@ -27,7 +27,7 @@ public class Todo extends BaseEntity {
         Todo todo = new Todo();
         todo.title = title;
         todo.content = content;
-        todo.status = Status.TODO;
+        todo.status = TodoStatus.TODO;
         todo.member = member;
         return todo;
     }

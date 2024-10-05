@@ -1,7 +1,7 @@
 package com.app.todolist.api.todos.dto;
 
-import com.app.todolist.domain.todos.Status;
 import com.app.todolist.domain.todos.Todo;
+import com.app.todolist.domain.todos.TodoStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,7 +15,7 @@ public class TodoResponse {
     private Long id;
     private String title;
     private String content;
-    private Status status;
+    private TodoStatus status;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdAt;
@@ -30,7 +30,7 @@ public class TodoResponse {
                 .id(todo.getId())
                 .title(todo.getTitle())
                 .content(todo.getContent())
-                .status(Status.TODO)
+                .status(TodoStatus.TODO)
                 .createdAt(todo.getCreatedAt())
                 .updatedAt(todo.getUpdatedAt())
                 .member(new TodoMemberInfo(todo.getMember().getId(), todo.getMember().getEmail()))

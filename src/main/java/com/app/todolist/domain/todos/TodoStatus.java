@@ -5,6 +5,8 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum Status {
-    TODO
+public enum TodoStatus {
+    TODO("할일");
+
+    private final String type;
 }
