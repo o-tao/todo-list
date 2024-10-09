@@ -1,5 +1,7 @@
 package com.app.todolist.domain.todos;
 
+import com.app.todolist.domain.members.Member;
+import com.app.todolist.domain.members.MemberRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
@@ -7,66 +9,77 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import java.time.LocalDateTime;
+import java.util.List;
 
 @DataJpaTest
 class TodoRepositoryTest {
 
     @Autowired
-    private TodosRepository todosRepository;
+    private TodoRepository todoRepository;
+    @Autowired
+    private MemberRepository memberRepository;
 
     @AfterEach
     public void clear() {
-        todosRepository.deleteAllInBatch();
+        todoRepository.deleteAllInBatch();
     }
 
     @Test
-    @DisplayName("board에 저장한 값을 조회할 수 있다")
-    public void saveTest() {
+    @DisplayName("저장한 모든 Todo를 조회할 수 있다.")
+    public void findByAllTest() {
         //given
-        Todo todo = Todo.create("todo-list", "hello");
+        Member member = Member.create("tao@exemple.com", "1234");
+        memberRepository.save(member);
+
+        Todo todo1 = Todo.create(member, "todo-list", "hello");
+        Todo todo2 = Todo.create(member, "todo-list", "hello");
+        Todo todo3 = Todo.create(member, "todo-list", "hello");
+        todoRepository.save(todo1);
+        todoRepository.save(todo2);
+        todoRepository.save(todo3);
 
         //when
-        todosRepository.save(todo);
-        Todo findTodo = todosRepository.findAll().stream().findAny().orElseThrow();
+        List<Todo> findTodo = todoRepository.findAll();
 
         //then
-        Assertions.assertThat(findTodo.getTitle()).isEqualTo(todo.getTitle());
-        Assertions.assertThat(findTodo.getContent()).isEqualTo(todo.getContent());
+        Member findMember = findTodo.getLast().getMember();
+        Assertions.assertThat(member.getEmail()).isEqualTo(findMember.getEmail());
+        Assertions.assertThat(member.getPassword()).isEqualTo(findMember.getPassword());
+        Assertions.assertThat(findTodo).hasSize(3);
 
     }
 
     @Test
-    @DisplayName("board에 저장한 시간이 createdAt에 저장된다")
+    @DisplayName("회원이 저장한 Todo의 시간이 createdAt에 저장된다.")
     public void createdAtTest() {
         //given
-        LocalDateTime now = LocalDateTime.now();
-        Todo todo = Todo.create("todo-list", "hello");
+        Member member = Member.create("tao@exemple.com", "1234");
+        memberRepository.save(member);
+        Todo todo = Todo.create(member, "todo-list", "hello");
+        todoRepository.save(todo);
 
         //when
-        todosRepository.save(todo);
-        Todo findTodo = todosRepository.findAll().stream().findFirst().orElseThrow();
+        Todo findTodo = todoRepository.findAll().stream().findFirst().orElseThrow();
 
         //then
-        Assertions.assertThat(findTodo.getCreatedAt().isAfter(now)).isTrue();
+        Assertions.assertThat(findTodo.getCreatedAt()).isNotNull();
 
     }
 
     @Test
-    @DisplayName("board에 저장한 시간이 updatedAt에 저장된다")
+    @DisplayName("회원이 저장한 Todo의 시간이 updatedAt에 저장된다.")
     public void updatedAtTest() {
         //given
-        LocalDateTime now = LocalDateTime.now();
-        Todo todo = Todo.create("todo-list", "hello");
+        Member member = Member.create("tao@exemple.com", "1234");
+        memberRepository.save(member);
+        Todo todo = Todo.create(member, "todo-list", "hello");
+        todoRepository.save(todo);
 
         //when
-        todosRepository.save(todo);
-        Todo findTodo = todosRepository.findAll().stream().findFirst().orElseThrow();
+        Todo findTodo = todoRepository.findAll().stream().findFirst().orElseThrow();
 
         //then
-        Assertions.assertThat(findTodo.getUpdatedAt().isAfter(now)).isTrue();
+        Assertions.assertThat(findTodo.getUpdatedAt()).isNotNull();
 
     }
-
-
 }

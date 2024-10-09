@@ -27,10 +27,10 @@ class MemberServiceTest {
 
     @Test
     @DisplayName("로그인 아이디와 비밀번호로 회원을 생성한다.")
-    public void saveMemberTest() {
+    public void createMemberMemberTest() {
         // given
-        Member member1 = Member.save("tao@exemple.com", "1234");
-        memberService.save(member1);
+        Member member1 = Member.create("tao@exemple.com", "1234");
+        memberService.createMember(member1);
 
         // when
         Member findMember = memberRepository.findAll().stream().findFirst().orElseThrow();
@@ -44,12 +44,12 @@ class MemberServiceTest {
     @DisplayName("로그인 아이디가 존재할 경우 예외가 발생한다.")
     public void validateMemberTest() {
         // given
-        Member member1 = Member.save("tao@exemple.com", "1234");
-        Member member2 = Member.save("tao@exemple.com", "1234");
-        memberService.save(member1);
+        Member member1 = Member.create("tao@exemple.com", "1234");
+        Member member2 = Member.create("tao@exemple.com", "1234");
+        memberService.createMember(member1);
 
         // when
-        TodoApplicationException exception = assertThrows(TodoApplicationException.class, () -> memberService.save(member2));
+        TodoApplicationException exception = assertThrows(TodoApplicationException.class, () -> memberService.createMember(member2));
 
         // then
         assertThat(exception.getClass()).isEqualTo(TodoApplicationException.class);

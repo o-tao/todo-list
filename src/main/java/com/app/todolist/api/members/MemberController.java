@@ -18,8 +18,8 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping
-    public MemberResponse create(@RequestBody @Valid MemberRequest memberRequest) {
-        Member member = memberService.save(memberRequest.toEntity());
+    public MemberResponse createMember(@RequestBody @Valid MemberRequest memberRequest) {
+        Member member = memberService.createMember(memberRequest.toEntity());
         return MemberResponse.of(member);
     }
 }

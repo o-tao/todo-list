@@ -21,9 +21,9 @@ class MemberRepositoryTest {
 
     @Test
     @DisplayName("회원가입 한 member를 조회할 수 있다.")
-    public void saveTest() {
+    public void createTest() {
         // given
-        Member member = Member.save("tao@exemple.com", "1234");
+        Member member = Member.create("tao@exemple.com", "1234");
         memberRepository.save(member);
 
         // when
@@ -36,9 +36,9 @@ class MemberRepositoryTest {
 
     @Test
     @DisplayName("회원가입 시 생성시간이 createdAt에 저장된다.")
-    public void saveCreatedAtTest() {
+    public void createCreatedAtTest() {
         // given
-        Member member = Member.save("tao@exemple.com", "1234");
+        Member member = Member.create("tao@exemple.com", "1234");
         memberRepository.save(member);
 
         // when
@@ -52,9 +52,9 @@ class MemberRepositoryTest {
     @DisplayName("이메일이 존재할 경우 existsByEmail이 true를 반환한다.")
     public void ExistsByEmailTest() {
         // given
-        Member member1 = Member.save("tao@exemple.com", "1234");
+        Member member1 = Member.create("tao@exemple.com", "1234");
         memberRepository.save(member1);
-        Member member2 = Member.save("tao@exemple.com", "1234");
+        Member member2 = Member.create("tao@exemple.com", "1234");
 
         // when
         boolean exist = memberRepository.existsByEmail(member2.getEmail());

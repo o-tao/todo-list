@@ -17,7 +17,7 @@ public class Member extends BaseEntity {
     @Column(nullable = false, length = 60)
     private String password;
 
-    public static Member save(String email, String password) {
+    public static Member create(String email, String password) {
         Member member = new Member();
         member.email = email;
         member.password = password;
