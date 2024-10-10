@@ -1,11 +1,9 @@
 package com.app.todolist.domain.todos.repository;
 
-import com.app.todolist.api.todos.dto.TodoSearchRequest;
 import com.app.todolist.domain.members.Member;
 import com.app.todolist.domain.members.repository.MemberRepository;
 import com.app.todolist.domain.todos.Todo;
 import com.app.todolist.domain.todos.TodoStatus;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 class TodoCustomRepositoryTest {
@@ -40,19 +40,61 @@ class TodoCustomRepositoryTest {
         Todo todo = Todo.create(member, "todo title", "hello");
         todoRepository.save(todo);
 
-        TodoSearchRequest searchRequest = new TodoSearchRequest();
-        searchRequest.setMemberId(member.getId());
-        searchRequest.setTitle("title");
-        searchRequest.setStatus(TodoStatus.TODO);
+        // when
+        List<Todo> titleContains = todoCustomRepository.findByTitleContains(
+                member.getId(), "title", TodoStatus.TODO);
+
+        // then
+        assertThat(titleContains.size()).isEqualTo(1);
+        assertThat(titleContains).extracting(Todo::getMember)
+                .extracting(Member::getId).containsExactly(todo.getMember().getId());
+        assertThat(titleContains).extracting(Todo::getTitle).containsExactly(todo.getTitle());
+        assertThat(titleContains).extracting(Todo::getStatus).containsExactly(todo.getStatus());
+    }
+
+    @Test
+    @DisplayName("title에 'tao'를 포함한 Todo 검색결과를 가져온다.")
+    public void searchTodosByTitleContainsTest() {
+        // given
+        Member member = Member.create("tao@exemple.com", "1234");
+        memberRepository.save(member);
+
+        Todo todo1 = Todo.create(member, "test todo title", "hello");
+        Todo todo2 = Todo.create(member, "hello tao! title", "world");
+        Todo todo3 = Todo.create(member, "hello world tao! title", "hello");
+        Todo todo4 = Todo.create(member, "hello tao! test title", "test");
+        Todo todo5 = Todo.create(member, "hello world title", "test");
+        todoRepository.saveAll(List.of(todo1, todo2, todo3, todo4, todo5));
 
         // when
         List<Todo> titleContains = todoCustomRepository.findByTitleContains(
-                searchRequest.getMemberId(), searchRequest.getTitle(), searchRequest.getStatus());
+                member.getId(), "tao", TodoStatus.TODO);
 
         // then
-        Assertions.assertThat(titleContains.stream().map(Todo -> todo.getMember().getId())).containsExactly(todo.getMember().getId());
-        Assertions.assertThat(titleContains).extracting(searchRequest.getTitle()).containsExactly(todo.getTitle());
-        Assertions.assertThat(titleContains.stream().map(Todo::getStatus)).containsExactly(todo.getStatus());
+        assertThat(titleContains).hasSize(3);
+        assertThat(titleContains).extracting(Todo::getTitle).allMatch(title -> title.contains("tao"));
+    }
+
+    @Test
+    @DisplayName("title에 'tao'를 포함한 Todo가 없을 경우 빈 리스트를 반환한다.")
+    public void searchTodosByTitleContains_isEmpty() {
+        // given
+        Member member = Member.create("tao@exemple.com", "1234");
+        memberRepository.save(member);
+
+        Todo todo1 = Todo.create(member, "test todo title", "hello");
+        Todo todo2 = Todo.create(member, "hello! title", "world");
+        Todo todo3 = Todo.create(member, "hello world! title", "hello");
+        Todo todo4 = Todo.create(member, "hello! test title", "test");
+        Todo todo5 = Todo.create(member, "hello world title", "test");
+        todoRepository.saveAll(List.of(todo1, todo2, todo3, todo4, todo5));
+
+        // when
+        List<Todo> titleContains = todoCustomRepository.findByTitleContains(
+                member.getId(), "tao", TodoStatus.TODO);
+
+        // then
+        assertThat(titleContains).isEmpty();
     }
 
     @Test
@@ -65,19 +107,16 @@ class TodoCustomRepositoryTest {
         Todo todo = Todo.create(member, "todo title", "hello");
         todoRepository.save(todo);
 
-        TodoSearchRequest searchRequest = new TodoSearchRequest();
-        searchRequest.setMemberId(member.getId());
-        searchRequest.setTitle(null);
-        searchRequest.setStatus(TodoStatus.TODO);
-
         // when
         List<Todo> titleContains = todoCustomRepository.findByTitleContains(
-                searchRequest.getMemberId(), searchRequest.getTitle(), searchRequest.getStatus());
+                member.getId(), null, TodoStatus.TODO);
 
         // then
-        Assertions.assertThat(titleContains.stream().map(Todo -> todo.getMember().getId())).containsExactly(todo.getMember().getId());
-        Assertions.assertThat(titleContains.stream().map(Todo::getTitle)).containsExactly(todo.getTitle());
-        Assertions.assertThat(titleContains.stream().map(Todo::getStatus)).containsExactly(todo.getStatus());
+        assertThat(titleContains.size()).isEqualTo(1);
+        assertThat(titleContains).extracting(Todo::getMember)
+                .extracting(Member::getId).containsExactly(todo.getMember().getId());
+        assertThat(titleContains).extracting(Todo::getTitle).containsExactly(todo.getTitle());
+        assertThat(titleContains).extracting(Todo::getStatus).containsExactly(todo.getStatus());
     }
 
     @Test
@@ -90,19 +129,16 @@ class TodoCustomRepositoryTest {
         Todo todo = Todo.create(member, "todo title", "hello");
         todoRepository.save(todo);
 
-        TodoSearchRequest searchRequest = new TodoSearchRequest();
-        searchRequest.setMemberId(member.getId());
-        searchRequest.setTitle("");
-        searchRequest.setStatus(TodoStatus.TODO);
-
         // when
         List<Todo> titleContains = todoCustomRepository.findByTitleContains(
-                searchRequest.getMemberId(), searchRequest.getTitle(), searchRequest.getStatus());
+                member.getId(), "", TodoStatus.TODO);
 
         // then
-        Assertions.assertThat(titleContains.stream().map(Todo -> todo.getMember().getId())).containsExactly(todo.getMember().getId());
-        Assertions.assertThat(titleContains.stream().map(Todo::getTitle)).containsExactly(todo.getTitle());
-        Assertions.assertThat(titleContains.stream().map(Todo::getStatus)).containsExactly(todo.getStatus());
+        assertThat(titleContains.size()).isEqualTo(1);
+        assertThat(titleContains).extracting(Todo::getMember)
+                .extracting(Member::getId).containsExactly(todo.getMember().getId());
+        assertThat(titleContains).extracting(Todo::getTitle).containsExactly(todo.getTitle());
+        assertThat(titleContains).extracting(Todo::getStatus).containsExactly(todo.getStatus());
     }
 
     @Test
@@ -115,18 +151,15 @@ class TodoCustomRepositoryTest {
         Todo todo = Todo.create(member, "todo title", "hello");
         todoRepository.save(todo);
 
-        TodoSearchRequest searchRequest = new TodoSearchRequest();
-        searchRequest.setMemberId(member.getId());
-        searchRequest.setTitle("title");
-        searchRequest.setStatus(null);
-
         // when
         List<Todo> titleContains = todoCustomRepository.findByTitleContains(
-                searchRequest.getMemberId(), searchRequest.getTitle(), searchRequest.getStatus());
+                member.getId(), "title", null);
 
         // then
-        Assertions.assertThat(titleContains.stream().map(Todo -> todo.getMember().getId())).containsExactly(todo.getMember().getId());
-        Assertions.assertThat(titleContains.stream().map(Todo::getTitle)).containsExactly(todo.getTitle());
-        Assertions.assertThat(titleContains.stream().map(Todo::getStatus)).containsExactly(todo.getStatus());
+        assertThat(titleContains.size()).isEqualTo(1);
+        assertThat(titleContains).extracting(Todo::getMember)
+                .extracting(Member::getId).containsExactly(todo.getMember().getId());
+        assertThat(titleContains).extracting(Todo::getTitle).containsExactly(todo.getTitle());
+        assertThat(titleContains).extracting(Todo::getStatus).containsExactly(todo.getStatus());
     }
 }
