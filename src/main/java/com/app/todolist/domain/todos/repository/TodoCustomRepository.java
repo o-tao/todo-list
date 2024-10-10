@@ -22,17 +22,17 @@ public class TodoCustomRepository {
                 .selectFrom(todo)
                 .where(
                         todo.member.id.eq(memberId)
-                                .and(titleEq(title))
-                                .and(statusEq(status))
+                                .and(titleCondition(title))
+                                .and(statusCondition(status))
                 )
                 .fetch();
     }
 
-    private BooleanExpression titleEq(String title) {
+    private BooleanExpression titleCondition(String title) {
         return title != null ? todo.title.contains(title) : null;
     }
 
-    private BooleanExpression statusEq(TodoStatus status) {
+    private BooleanExpression statusCondition(TodoStatus status) {
         return status != null ? todo.status.eq(status) : null;
     }
 }
