@@ -1,9 +1,9 @@
 package com.app.todolist.api.todos;
 
+import com.app.todolist.api.todos.dto.TodosWithOptions;
 import com.app.todolist.domain.members.Member;
 import com.app.todolist.domain.members.repository.MemberRepository;
 import com.app.todolist.domain.todos.Todo;
-import com.app.todolist.domain.todos.TodoStatus;
 import com.app.todolist.domain.todos.repository.TodoCustomRepository;
 import com.app.todolist.domain.todos.repository.TodoRepository;
 import com.app.todolist.exception.ErrorCode;
@@ -29,9 +29,10 @@ public class TodoService {
         return todoRepository.save(Todo.create(member, title, content));
     }
 
-    public List<Todo> searchTodosByTitle(Long memberId, String title, TodoStatus status) {
-        memberRepository.findById(memberId).orElseThrow(()
+    public List<Todo> searchTodosWithOptions(TodosWithOptions todosWithOptions) {
+        memberRepository.findById(todosWithOptions.getMemberId()).orElseThrow(()
                 -> new TodoApplicationException(ErrorCode.MEMBER_NOT_FOUND));
-        return todoCustomRepository.findByTitleContains(memberId, title, status);
+        return todoCustomRepository.findByTitleContains(
+                todosWithOptions.getMemberId(), todosWithOptions.getTitle(), todosWithOptions.getStatus());
     }
 }
