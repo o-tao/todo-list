@@ -1,5 +1,6 @@
 package com.app.todolist.domain.todos.repository;
 
+import com.app.todolist.api.todos.dto.TodosWithOptions;
 import com.app.todolist.domain.members.Member;
 import com.app.todolist.domain.members.repository.MemberRepository;
 import com.app.todolist.domain.todos.Todo;
@@ -15,14 +16,14 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-class TodoCustomRepositoryTest {
+class TodoQueryRepositoryTest {
 
     @Autowired
     private MemberRepository memberRepository;
     @Autowired
     private TodoRepository todoRepository;
     @Autowired
-    private TodoCustomRepository todoCustomRepository;
+    private TodoQueryRepository todoQueryRepository;
 
     @AfterEach
     void clear() {
@@ -40,9 +41,11 @@ class TodoCustomRepositoryTest {
         Todo todo = Todo.create(member, "todo title", "hello");
         todoRepository.save(todo);
 
+        TodosWithOptions todosWithOptions = new TodosWithOptions(
+                member.getId(), todo.getTitle(), todo.getStatus());
+
         // when
-        List<Todo> titleContains = todoCustomRepository.findByTitleContains(
-                member.getId(), "title", TodoStatus.TODO);
+        List<Todo> titleContains = todoQueryRepository.findByTitleContains(todosWithOptions);
 
         // then
         assertThat(titleContains.size()).isEqualTo(1);
@@ -66,9 +69,11 @@ class TodoCustomRepositoryTest {
         Todo todo5 = Todo.create(member, "hello world title", "test");
         todoRepository.saveAll(List.of(todo1, todo2, todo3, todo4, todo5));
 
-        // when
-        List<Todo> titleContains = todoCustomRepository.findByTitleContains(
+        TodosWithOptions todosWithOptions = new TodosWithOptions(
                 member.getId(), "tao", TodoStatus.TODO);
+
+        // when
+        List<Todo> titleContains = todoQueryRepository.findByTitleContains(todosWithOptions);
 
         // then
         assertThat(titleContains).hasSize(3);
@@ -89,9 +94,11 @@ class TodoCustomRepositoryTest {
         Todo todo5 = Todo.create(member, "hello world title", "test");
         todoRepository.saveAll(List.of(todo1, todo2, todo3, todo4, todo5));
 
-        // when
-        List<Todo> titleContains = todoCustomRepository.findByTitleContains(
+        TodosWithOptions todosWithOptions = new TodosWithOptions(
                 member.getId(), "tao", TodoStatus.TODO);
+
+        // when
+        List<Todo> titleContains = todoQueryRepository.findByTitleContains(todosWithOptions);
 
         // then
         assertThat(titleContains).isEmpty();
@@ -107,9 +114,11 @@ class TodoCustomRepositoryTest {
         Todo todo = Todo.create(member, "todo title", "hello");
         todoRepository.save(todo);
 
-        // when
-        List<Todo> titleContains = todoCustomRepository.findByTitleContains(
+        TodosWithOptions todosWithOptions = new TodosWithOptions(
                 member.getId(), null, TodoStatus.TODO);
+
+        // when
+        List<Todo> titleContains = todoQueryRepository.findByTitleContains(todosWithOptions);
 
         // then
         assertThat(titleContains.size()).isEqualTo(1);
@@ -129,9 +138,11 @@ class TodoCustomRepositoryTest {
         Todo todo = Todo.create(member, "todo title", "hello");
         todoRepository.save(todo);
 
-        // when
-        List<Todo> titleContains = todoCustomRepository.findByTitleContains(
+        TodosWithOptions todosWithOptions = new TodosWithOptions(
                 member.getId(), "", TodoStatus.TODO);
+
+        // when
+        List<Todo> titleContains = todoQueryRepository.findByTitleContains(todosWithOptions);
 
         // then
         assertThat(titleContains.size()).isEqualTo(1);
@@ -151,9 +162,11 @@ class TodoCustomRepositoryTest {
         Todo todo = Todo.create(member, "todo title", "hello");
         todoRepository.save(todo);
 
-        // when
-        List<Todo> titleContains = todoCustomRepository.findByTitleContains(
+        TodosWithOptions todosWithOptions = new TodosWithOptions(
                 member.getId(), "title", null);
+
+        // when
+        List<Todo> titleContains = todoQueryRepository.findByTitleContains(todosWithOptions);
 
         // then
         assertThat(titleContains.size()).isEqualTo(1);
