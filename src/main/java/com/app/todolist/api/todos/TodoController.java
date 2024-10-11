@@ -26,7 +26,7 @@ public class TodoController {
     }
 
     @GetMapping
-    public TodoSearchResponse searchTodosByTitle(@Valid TodoSearchRequest searchRequest) {
+    public TodoSearchResponse searchTodosWithOptions(@Valid TodoSearchRequest searchRequest) {
         List<Todo> todos = todoService.searchTodosWithOptions(searchRequest.toOption());
         return TodoSearchResponse.of(todos);
     }
