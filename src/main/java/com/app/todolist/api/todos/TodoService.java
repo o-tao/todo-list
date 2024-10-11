@@ -34,7 +34,7 @@ public class TodoService {
         return todoRepository.save(Todo.create(member, title, content));
     }
 
-    public List<Todo> searchTodosWithOptions(TodosWithOptions todosWithOptions) {
+    public List<Todo> searchTodosByOptions(TodosWithOptions todosWithOptions) {
         findMemberById(todosWithOptions.getMemberId());
         return todoQueryRepository.findByTitleContains(todosWithOptions);
     }

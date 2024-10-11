@@ -84,7 +84,7 @@ class TodoServiceTest {
         Todo todo = todoService.createTodo(savedMember.getId(), "todo title", "hello");
 
         // when
-        List<Todo> searchedTodos = todoService.searchTodosWithOptions(
+        List<Todo> searchedTodos = todoService.searchTodosByOptions(
                 new TodosWithOptions(savedMember.getId(), "title", TodoStatus.TODO));
 
         // then
@@ -109,7 +109,7 @@ class TodoServiceTest {
         todoService.createTodo(savedMember.getId(), "hello world title", "test");
 
         // when
-        List<Todo> searchedTodos = todoService.searchTodosWithOptions(
+        List<Todo> searchedTodos = todoService.searchTodosByOptions(
                 new TodosWithOptions(savedMember.getId(), "tao", TodoStatus.TODO));
 
         // then
@@ -131,7 +131,7 @@ class TodoServiceTest {
         todoService.createTodo(savedMember.getId(), "hello world title", "test");
 
         // when
-        List<Todo> searchedTodos = todoService.searchTodosWithOptions(
+        List<Todo> searchedTodos = todoService.searchTodosByOptions(
                 new TodosWithOptions(savedMember.getId(), "tao", TodoStatus.TODO));
 
         // then
@@ -148,7 +148,7 @@ class TodoServiceTest {
         Todo todo = todoService.createTodo(savedMember.getId(), "todo title", "hello");
 
         // when
-        List<Todo> searchedTodos = todoService.searchTodosWithOptions(
+        List<Todo> searchedTodos = todoService.searchTodosByOptions(
                 new TodosWithOptions(savedMember.getId(), null, TodoStatus.TODO));
 
         // then
@@ -169,7 +169,7 @@ class TodoServiceTest {
         Todo todo = todoService.createTodo(savedMember.getId(), "todo title", "hello");
 
         // when
-        List<Todo> searchedTodos = todoService.searchTodosWithOptions(
+        List<Todo> searchedTodos = todoService.searchTodosByOptions(
                 new TodosWithOptions(savedMember.getId(), "", TodoStatus.TODO));
 
         // then
@@ -190,7 +190,7 @@ class TodoServiceTest {
         Todo todo = todoService.createTodo(savedMember.getId(), "todo title", "hello");
 
         // when
-        List<Todo> searchedTodos = todoService.searchTodosWithOptions(
+        List<Todo> searchedTodos = todoService.searchTodosByOptions(
                 new TodosWithOptions(savedMember.getId(), "title", null));
 
         // then
@@ -210,7 +210,7 @@ class TodoServiceTest {
 
         // when
         TodoApplicationException exception = assertThrows(TodoApplicationException.class,
-                () -> todoService.searchTodosWithOptions(invalidMemberTodosWithOptions));
+                () -> todoService.searchTodosByOptions(invalidMemberTodosWithOptions));
 
         // then
         assertThat(exception).isInstanceOf(TodoApplicationException.class);
