@@ -1,5 +1,6 @@
 package com.app.todolist.domain.todos.repository;
 
+import com.app.todolist.api.todos.dto.TodosWithOptions;
 import com.app.todolist.domain.todos.Todo;
 import com.app.todolist.domain.todos.TodoStatus;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -13,17 +14,17 @@ import static com.app.todolist.domain.todos.QTodo.todo;
 
 @Repository
 @RequiredArgsConstructor
-public class TodoCustomRepository {
+public class TodoQueryRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
 
-    public List<Todo> findByTitleContains(Long memberId, String title, TodoStatus status) {
+    public List<Todo> findByTitleContains(TodosWithOptions todosWithOptions) {
         return jpaQueryFactory
                 .selectFrom(todo)
                 .where(
-                        todo.member.id.eq(memberId)
-                                .and(titleCondition(title))
-                                .and(statusCondition(status))
+                        todo.member.id.eq(todosWithOptions.getMemberId())
+                                .and(titleCondition(todosWithOptions.getTitle()))
+                                .and(statusCondition(todosWithOptions.getStatus()))
                 )
                 .fetch();
     }

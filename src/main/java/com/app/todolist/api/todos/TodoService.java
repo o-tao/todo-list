@@ -4,7 +4,7 @@ import com.app.todolist.api.todos.dto.TodosWithOptions;
 import com.app.todolist.domain.members.Member;
 import com.app.todolist.domain.members.repository.MemberRepository;
 import com.app.todolist.domain.todos.Todo;
-import com.app.todolist.domain.todos.repository.TodoCustomRepository;
+import com.app.todolist.domain.todos.repository.TodoQueryRepository;
 import com.app.todolist.domain.todos.repository.TodoRepository;
 import com.app.todolist.exception.ErrorCode;
 import com.app.todolist.exception.TodoApplicationException;
@@ -21,7 +21,7 @@ public class TodoService {
 
     private final TodoRepository todoRepository;
     private final MemberRepository memberRepository;
-    private final TodoCustomRepository todoCustomRepository;
+    private final TodoQueryRepository todoQueryRepository;
 
     private Member findMemberById(Long memberId) {
         return memberRepository.findById(memberId).orElseThrow(()
@@ -36,7 +36,6 @@ public class TodoService {
 
     public List<Todo> searchTodosWithOptions(TodosWithOptions todosWithOptions) {
         findMemberById(todosWithOptions.getMemberId());
-        return todoCustomRepository.findByTitleContains(
-                todosWithOptions.getMemberId(), todosWithOptions.getTitle(), todosWithOptions.getStatus());
+        return todoQueryRepository.findByTitleContains(todosWithOptions);
     }
 }
