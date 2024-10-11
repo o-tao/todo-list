@@ -19,4 +19,8 @@ public class TodoSearchRequest {
     private String title;
 
     private TodoStatus status;
+
+    public TodosWithOptions toOption() {
+        return new TodosWithOptions(memberId, title, status);
+    }
 }
