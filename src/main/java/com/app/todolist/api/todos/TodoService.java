@@ -16,22 +16,26 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
+@Transactional(readOnly = true)
 public class TodoService {
 
     private final TodoRepository todoRepository;
     private final MemberRepository memberRepository;
     private final TodoCustomRepository todoCustomRepository;
 
-    public Todo createTodo(Long memberId, String title, String content) {
-        Member member = memberRepository.findById(memberId).orElseThrow(()
+    private Member findMemberById(Long memberId) {
+        return memberRepository.findById(memberId).orElseThrow(()
                 -> new TodoApplicationException(ErrorCode.MEMBER_NOT_FOUND));
+    }
+
+    @Transactional
+    public Todo createTodo(Long memberId, String title, String content) {
+        Member member = findMemberById(memberId);
         return todoRepository.save(Todo.create(member, title, content));
     }
 
     public List<Todo> searchTodosWithOptions(TodosWithOptions todosWithOptions) {
-        memberRepository.findById(todosWithOptions.getMemberId()).orElseThrow(()
-                -> new TodoApplicationException(ErrorCode.MEMBER_NOT_FOUND));
+        findMemberById(todosWithOptions.getMemberId());
         return todoCustomRepository.findByTitleContains(
                 todosWithOptions.getMemberId(), todosWithOptions.getTitle(), todosWithOptions.getStatus());
     }
