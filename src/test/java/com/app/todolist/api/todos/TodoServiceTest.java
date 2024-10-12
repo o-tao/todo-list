@@ -1,6 +1,6 @@
 package com.app.todolist.api.todos;
 
-import com.app.todolist.api.todos.dto.TodosWithOptions;
+import com.app.todolist.api.todos.dto.TodoSearchRequest;
 import com.app.todolist.domain.members.Member;
 import com.app.todolist.domain.members.repository.MemberRepository;
 import com.app.todolist.domain.todos.Todo;
@@ -12,9 +12,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -75,7 +76,7 @@ class TodoServiceTest {
     }
 
     @Test
-    @DisplayName("회원이 Todo를 검색한다.")
+    @DisplayName("회원이 생성된 Todo를 검색할 수 있다.")
     public void todoSearchTest() {
         // given
         Member member = Member.create("tao@exemple.com", "1234");
@@ -83,12 +84,17 @@ class TodoServiceTest {
 
         Todo todo = todoService.createTodo(savedMember.getId(), "todo title", "hello");
 
+        TodoSearchRequest searchRequest = new TodoSearchRequest();
+        searchRequest.setMemberId(member.getId());
+        searchRequest.setTitle("todo title");
+        searchRequest.setStatus(TodoStatus.TODO);
+        Pageable pageable = PageRequest.of(0, 10);
+
         // when
-        List<Todo> searchedTodos = todoService.searchTodosByOptions(
-                new TodosWithOptions(savedMember.getId(), "title", TodoStatus.TODO));
+        Page<Todo> searchedTodos = todoService.searchTodosByOptions(searchRequest.toOption(), pageable);
 
         // then
-        assertThat(searchedTodos.size()).isEqualTo(1);
+        assertThat(searchedTodos).hasSize(1);
         assertThat(searchedTodos).extracting(Todo::getMember)
                 .extracting(Member::getId).containsExactly(todo.getMember().getId());
         assertThat(searchedTodos).extracting(Todo::getTitle).containsExactly(todo.getTitle());
@@ -108,9 +114,15 @@ class TodoServiceTest {
         todoService.createTodo(savedMember.getId(), "hello tao! test title", "test");
         todoService.createTodo(savedMember.getId(), "hello world title", "test");
 
+        TodoSearchRequest searchRequest = new TodoSearchRequest();
+        searchRequest.setMemberId(member.getId());
+        searchRequest.setTitle("tao");
+        searchRequest.setStatus(TodoStatus.TODO);
+        Pageable pageable = PageRequest.of(0, 10);
+
+
         // when
-        List<Todo> searchedTodos = todoService.searchTodosByOptions(
-                new TodosWithOptions(savedMember.getId(), "tao", TodoStatus.TODO));
+        Page<Todo> searchedTodos = todoService.searchTodosByOptions(searchRequest.toOption(), pageable);
 
         // then
         assertThat(searchedTodos).hasSize(3);
@@ -130,9 +142,14 @@ class TodoServiceTest {
         todoService.createTodo(savedMember.getId(), "hello! test title", "test");
         todoService.createTodo(savedMember.getId(), "hello world title", "test");
 
+        TodoSearchRequest searchRequest = new TodoSearchRequest();
+        searchRequest.setMemberId(member.getId());
+        searchRequest.setTitle("tao");
+        searchRequest.setStatus(TodoStatus.TODO);
+        Pageable pageable = PageRequest.of(0, 10);
+
         // when
-        List<Todo> searchedTodos = todoService.searchTodosByOptions(
-                new TodosWithOptions(savedMember.getId(), "tao", TodoStatus.TODO));
+        Page<Todo> searchedTodos = todoService.searchTodosByOptions(searchRequest.toOption(), pageable);
 
         // then
         assertThat(searchedTodos).isEmpty();
@@ -147,12 +164,17 @@ class TodoServiceTest {
 
         Todo todo = todoService.createTodo(savedMember.getId(), "todo title", "hello");
 
+        TodoSearchRequest searchRequest = new TodoSearchRequest();
+        searchRequest.setMemberId(member.getId());
+        searchRequest.setTitle(null);
+        searchRequest.setStatus(TodoStatus.TODO);
+        Pageable pageable = PageRequest.of(0, 10);
+
         // when
-        List<Todo> searchedTodos = todoService.searchTodosByOptions(
-                new TodosWithOptions(savedMember.getId(), null, TodoStatus.TODO));
+        Page<Todo> searchedTodos = todoService.searchTodosByOptions(searchRequest.toOption(), pageable);
 
         // then
-        assertThat(searchedTodos.size()).isEqualTo(1);
+        assertThat(searchedTodos).hasSize(1);
         assertThat(searchedTodos).extracting(Todo::getMember)
                 .extracting(Member::getId).containsExactly(todo.getMember().getId());
         assertThat(searchedTodos).extracting(Todo::getTitle).containsExactly(todo.getTitle());
@@ -168,12 +190,17 @@ class TodoServiceTest {
 
         Todo todo = todoService.createTodo(savedMember.getId(), "todo title", "hello");
 
+        TodoSearchRequest searchRequest = new TodoSearchRequest();
+        searchRequest.setMemberId(member.getId());
+        searchRequest.setTitle("");
+        searchRequest.setStatus(TodoStatus.TODO);
+        Pageable pageable = PageRequest.of(0, 10);
+
         // when
-        List<Todo> searchedTodos = todoService.searchTodosByOptions(
-                new TodosWithOptions(savedMember.getId(), "", TodoStatus.TODO));
+        Page<Todo> searchedTodos = todoService.searchTodosByOptions(searchRequest.toOption(), pageable);
 
         // then
-        assertThat(searchedTodos.size()).isEqualTo(1);
+        assertThat(searchedTodos).hasSize(1);
         assertThat(searchedTodos).extracting(Todo::getMember)
                 .extracting(Member::getId).containsExactly(todo.getMember().getId());
         assertThat(searchedTodos).extracting(Todo::getTitle).containsExactly(todo.getTitle());
@@ -189,12 +216,17 @@ class TodoServiceTest {
 
         Todo todo = todoService.createTodo(savedMember.getId(), "todo title", "hello");
 
+        TodoSearchRequest searchRequest = new TodoSearchRequest();
+        searchRequest.setMemberId(member.getId());
+        searchRequest.setTitle("todo title");
+        searchRequest.setStatus(null);
+        Pageable pageable = PageRequest.of(0, 10);
+
         // when
-        List<Todo> searchedTodos = todoService.searchTodosByOptions(
-                new TodosWithOptions(savedMember.getId(), "title", null));
+        Page<Todo> searchedTodos = todoService.searchTodosByOptions(searchRequest.toOption(), pageable);
 
         // then
-        assertThat(searchedTodos.size()).isEqualTo(1);
+        assertThat(searchedTodos).hasSize(1);
         assertThat(searchedTodos).extracting(Todo::getMember)
                 .extracting(Member::getId).containsExactly(todo.getMember().getId());
         assertThat(searchedTodos).extracting(Todo::getTitle).containsExactly(todo.getTitle());
@@ -205,12 +237,15 @@ class TodoServiceTest {
     @DisplayName("존재하지 않는 회원이 todo를 검색시 예외가 발생한다.")
     public void todoSearchMemberValidateTest() {
         // given
-        TodosWithOptions invalidMemberTodosWithOptions = new TodosWithOptions(
-                -1L, "title", TodoStatus.TODO);
+        TodoSearchRequest searchRequest = new TodoSearchRequest();
+        searchRequest.setMemberId(-1L);
+        searchRequest.setTitle("todo title");
+        searchRequest.setStatus(TodoStatus.TODO);
+        Pageable pageable = PageRequest.of(0, 10);
 
         // when
         TodoApplicationException exception = assertThrows(TodoApplicationException.class,
-                () -> todoService.searchTodosByOptions(invalidMemberTodosWithOptions));
+                () -> todoService.searchTodosByOptions(searchRequest.toOption(), pageable));
 
         // then
         assertThat(exception).isInstanceOf(TodoApplicationException.class);

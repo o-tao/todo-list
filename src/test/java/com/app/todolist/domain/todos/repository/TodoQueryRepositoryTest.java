@@ -1,6 +1,6 @@
 package com.app.todolist.domain.todos.repository;
 
-import com.app.todolist.api.todos.dto.TodosWithOptions;
+import com.app.todolist.api.todos.dto.TodoSearchRequest;
 import com.app.todolist.domain.members.Member;
 import com.app.todolist.domain.members.repository.MemberRepository;
 import com.app.todolist.domain.todos.Todo;
@@ -10,6 +10,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -32,7 +35,7 @@ class TodoQueryRepositoryTest {
     }
 
     @Test
-    @DisplayName("todo를 검색할 수 있다.")
+    @DisplayName("회원이 생성된 Todo를 검색할 수 있다.")
     public void todoSearchTest() {
         // given
         Member member = Member.create("tao@exemple.com", "1234");
@@ -41,14 +44,17 @@ class TodoQueryRepositoryTest {
         Todo todo = Todo.create(member, "todo title", "hello");
         todoRepository.save(todo);
 
-        TodosWithOptions todosWithOptions = new TodosWithOptions(
-                member.getId(), todo.getTitle(), todo.getStatus());
+        TodoSearchRequest searchRequest = new TodoSearchRequest();
+        searchRequest.setMemberId(member.getId());
+        searchRequest.setTitle("todo title");
+        searchRequest.setStatus(TodoStatus.TODO);
+        Pageable pageable = PageRequest.of(0, 10);
 
         // when
-        List<Todo> titleContains = todoQueryRepository.findByTitleContains(todosWithOptions);
+        Page<Todo> titleContains = todoQueryRepository.findByTitleContains(searchRequest.toOption(), pageable);
 
         // then
-        assertThat(titleContains.size()).isEqualTo(1);
+        assertThat(titleContains).hasSize(1);
         assertThat(titleContains).extracting(Todo::getMember)
                 .extracting(Member::getId).containsExactly(todo.getMember().getId());
         assertThat(titleContains).extracting(Todo::getTitle).containsExactly(todo.getTitle());
@@ -69,11 +75,14 @@ class TodoQueryRepositoryTest {
         Todo todo5 = Todo.create(member, "hello world title", "test");
         todoRepository.saveAll(List.of(todo1, todo2, todo3, todo4, todo5));
 
-        TodosWithOptions todosWithOptions = new TodosWithOptions(
-                member.getId(), "tao", TodoStatus.TODO);
+        TodoSearchRequest searchRequest = new TodoSearchRequest();
+        searchRequest.setMemberId(member.getId());
+        searchRequest.setTitle("tao");
+        searchRequest.setStatus(TodoStatus.TODO);
+        Pageable pageable = PageRequest.of(0, 10);
 
         // when
-        List<Todo> titleContains = todoQueryRepository.findByTitleContains(todosWithOptions);
+        Page<Todo> titleContains = todoQueryRepository.findByTitleContains(searchRequest.toOption(), pageable);
 
         // then
         assertThat(titleContains).hasSize(3);
@@ -94,11 +103,14 @@ class TodoQueryRepositoryTest {
         Todo todo5 = Todo.create(member, "hello world title", "test");
         todoRepository.saveAll(List.of(todo1, todo2, todo3, todo4, todo5));
 
-        TodosWithOptions todosWithOptions = new TodosWithOptions(
-                member.getId(), "tao", TodoStatus.TODO);
+        TodoSearchRequest searchRequest = new TodoSearchRequest();
+        searchRequest.setMemberId(member.getId());
+        searchRequest.setTitle("tao");
+        searchRequest.setStatus(TodoStatus.TODO);
+        Pageable pageable = PageRequest.of(0, 10);
 
         // when
-        List<Todo> titleContains = todoQueryRepository.findByTitleContains(todosWithOptions);
+        Page<Todo> titleContains = todoQueryRepository.findByTitleContains(searchRequest.toOption(), pageable);
 
         // then
         assertThat(titleContains).isEmpty();
@@ -114,14 +126,17 @@ class TodoQueryRepositoryTest {
         Todo todo = Todo.create(member, "todo title", "hello");
         todoRepository.save(todo);
 
-        TodosWithOptions todosWithOptions = new TodosWithOptions(
-                member.getId(), null, TodoStatus.TODO);
+        TodoSearchRequest searchRequest = new TodoSearchRequest();
+        searchRequest.setMemberId(member.getId());
+        searchRequest.setTitle("todo title");
+        searchRequest.setStatus(TodoStatus.TODO);
+        Pageable pageable = PageRequest.of(0, 10);
 
         // when
-        List<Todo> titleContains = todoQueryRepository.findByTitleContains(todosWithOptions);
+        Page<Todo> titleContains = todoQueryRepository.findByTitleContains(searchRequest.toOption(), pageable);
 
         // then
-        assertThat(titleContains.size()).isEqualTo(1);
+        assertThat(titleContains).hasSize(1);
         assertThat(titleContains).extracting(Todo::getMember)
                 .extracting(Member::getId).containsExactly(todo.getMember().getId());
         assertThat(titleContains).extracting(Todo::getTitle).containsExactly(todo.getTitle());
@@ -138,14 +153,17 @@ class TodoQueryRepositoryTest {
         Todo todo = Todo.create(member, "todo title", "hello");
         todoRepository.save(todo);
 
-        TodosWithOptions todosWithOptions = new TodosWithOptions(
-                member.getId(), "", TodoStatus.TODO);
+        TodoSearchRequest searchRequest = new TodoSearchRequest();
+        searchRequest.setMemberId(member.getId());
+        searchRequest.setTitle("todo title");
+        searchRequest.setStatus(TodoStatus.TODO);
+        Pageable pageable = PageRequest.of(0, 10);
 
         // when
-        List<Todo> titleContains = todoQueryRepository.findByTitleContains(todosWithOptions);
+        Page<Todo> titleContains = todoQueryRepository.findByTitleContains(searchRequest.toOption(), pageable);
 
         // then
-        assertThat(titleContains.size()).isEqualTo(1);
+        assertThat(titleContains).hasSize(1);
         assertThat(titleContains).extracting(Todo::getMember)
                 .extracting(Member::getId).containsExactly(todo.getMember().getId());
         assertThat(titleContains).extracting(Todo::getTitle).containsExactly(todo.getTitle());
@@ -162,14 +180,17 @@ class TodoQueryRepositoryTest {
         Todo todo = Todo.create(member, "todo title", "hello");
         todoRepository.save(todo);
 
-        TodosWithOptions todosWithOptions = new TodosWithOptions(
-                member.getId(), "title", null);
+        TodoSearchRequest searchRequest = new TodoSearchRequest();
+        searchRequest.setMemberId(member.getId());
+        searchRequest.setTitle("todo title");
+        searchRequest.setStatus(TodoStatus.TODO);
+        Pageable pageable = PageRequest.of(0, 10);
 
         // when
-        List<Todo> titleContains = todoQueryRepository.findByTitleContains(todosWithOptions);
+        Page<Todo> titleContains = todoQueryRepository.findByTitleContains(searchRequest.toOption(), pageable);
 
         // then
-        assertThat(titleContains.size()).isEqualTo(1);
+        assertThat(titleContains).hasSize(1);
         assertThat(titleContains).extracting(Todo::getMember)
                 .extracting(Member::getId).containsExactly(todo.getMember().getId());
         assertThat(titleContains).extracting(Todo::getTitle).containsExactly(todo.getTitle());
