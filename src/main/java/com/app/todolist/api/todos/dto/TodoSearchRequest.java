@@ -17,10 +17,11 @@ public class TodoSearchRequest {
     private Long memberId;
 
     private String title;
-
     private TodoStatus status;
+    private int page = 0;
+    private int size = 10;
 
     public TodosWithOptions toOption() {
-        return new TodosWithOptions(memberId, title, status);
+        return new TodosWithOptions(memberId, title, status, page, size);
     }
 }
