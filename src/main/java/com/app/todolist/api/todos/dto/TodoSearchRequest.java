@@ -18,10 +18,14 @@ public class TodoSearchRequest {
 
     private String title;
     private TodoStatus status;
+
+    @Positive(message = "페이지는 양수여야 합니다.")
     private int page = 0;
-    private int size = 10;
+
+    @Positive(message = "한 페이지에 조회 할 데이터 수는 양수여야 합니다.")
+    private int size = 5;
 
     public TodosWithOptions toOption() {
-        return new TodosWithOptions(memberId, title, status, page, size);
+        return new TodosWithOptions(memberId, title, status, page, page);
     }
 }

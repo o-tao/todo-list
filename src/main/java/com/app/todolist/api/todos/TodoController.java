@@ -28,7 +28,7 @@ public class TodoController {
 
     @GetMapping
     public TodoSearchResponse searchTodosByOptions(@Valid TodoSearchRequest searchRequest) {
-        Pageable pageable = PageRequest.of(searchRequest.getPage(), searchRequest.getSize());
+        Pageable pageable = PageRequest.of(searchRequest.getPage() - 1, searchRequest.getSize());
         Page<Todo> todos = todoService.searchTodosByOptions(searchRequest.toOption(), pageable);
         return TodoSearchResponse.of(todos);
     }
