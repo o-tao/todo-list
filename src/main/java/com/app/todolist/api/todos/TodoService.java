@@ -9,10 +9,10 @@ import com.app.todolist.domain.todos.repository.TodoRepository;
 import com.app.todolist.exception.ErrorCode;
 import com.app.todolist.exception.TodoApplicationException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -34,8 +34,8 @@ public class TodoService {
         return todoRepository.save(Todo.create(member, title, content));
     }
 
-    public List<Todo> searchTodosByOptions(TodosWithOptions todosWithOptions) {
+    public Page<Todo> searchTodosByOptions(TodosWithOptions todosWithOptions, Pageable pageable) {
         findMemberById(todosWithOptions.getMemberId());
-        return todoQueryRepository.findByTitleContains(todosWithOptions);
+        return todoQueryRepository.findByTitleContains(todosWithOptions, pageable);
     }
 }
