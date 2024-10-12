@@ -196,4 +196,64 @@ class TodoQueryRepositoryTest {
         assertThat(titleContains).extracting(Todo::getTitle).containsExactly(todo.getTitle());
         assertThat(titleContains).extracting(Todo::getStatus).containsExactly(todo.getStatus());
     }
+
+    @Test
+    @DisplayName("'tao'가 포함된 title 검색 시 정상적으로 총 페이지 수가 생성된다.")
+    public void todoSearchTotalPagesTest() {
+        // given
+        Member member = Member.create("tao@exemple.com", "1234");
+        memberRepository.save(member);
+
+        Todo todo1 = Todo.create(member, "todo tao title", "hello");
+        Todo todo2 = Todo.create(member, "tao title", "hello");
+        Todo todo3 = Todo.create(member, "title hello tao", "hello");
+        todoRepository.saveAll(List.of(todo1, todo2, todo3));
+
+        TodoSearchRequest searchRequest = new TodoSearchRequest();
+        searchRequest.setMemberId(member.getId());
+        searchRequest.setTitle("tao");
+        searchRequest.setStatus(TodoStatus.TODO);
+        Pageable pageable = PageRequest.of(0, 1);
+
+        // when
+        Page<Todo> titleContains = todoQueryRepository.findByTitleContains(searchRequest.toOption(), pageable);
+
+        // then
+        assertThat(titleContains).hasSize(1);
+        assertThat(titleContains.getTotalPages()).isEqualTo(3);
+        assertThat(titleContains.getTotalElements()).isEqualTo(3);
+    }
+
+    @Test
+    @DisplayName("title 검색 시 정상적으로 페이지 별로 'tao'를 포함한 검색결과를 가져온다.")
+    public void todoSearchResultsContainsTest() {
+        // given
+        Member member = Member.create("tao@exemple.com", "1234");
+        memberRepository.save(member);
+
+        Todo todo1 = Todo.create(member, "todo title", "hello");
+        Todo todo2 = Todo.create(member, "tao title", "hello");
+        Todo todo3 = Todo.create(member, "hello title", "hello");
+        todoRepository.saveAll(List.of(todo1, todo2, todo3));
+
+        TodoSearchRequest searchRequest = new TodoSearchRequest();
+        searchRequest.setMemberId(member.getId());
+        searchRequest.setTitle("tao");
+        searchRequest.setStatus(TodoStatus.TODO);
+        Pageable pageable = PageRequest.of(0, 1);
+
+        // when
+        Page<Todo> titleContains = todoQueryRepository.findByTitleContains(searchRequest.toOption(), pageable);
+
+        // then
+        assertThat(titleContains).hasSize(1);
+
+        for (int i = 0; i < titleContains.getTotalPages(); i++) {
+            Pageable page = PageRequest.of(i, 1);
+            Page<Todo> pageContent = todoQueryRepository.findByTitleContains(searchRequest.toOption(), page);
+
+            assertThat(pageContent).isNotEmpty();
+            assertThat(pageContent.getContent().getFirst().getTitle()).contains("tao");
+        }
+    }
 }
