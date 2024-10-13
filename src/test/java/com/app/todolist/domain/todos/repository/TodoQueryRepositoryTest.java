@@ -35,7 +35,7 @@ class TodoQueryRepositoryTest {
     }
 
     @Test
-    @DisplayName("회원이 생성된 Todo를 검색할 수 있다.")
+    @DisplayName("회원이 생성된 Todo를 검색하면 조회된다.")
     public void todoSearchTest() {
         // given
         Member member = Member.create("tao@exemple.com", "1234");

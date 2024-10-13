@@ -38,7 +38,7 @@ class TodoServiceTest {
 
     @Test
     @Transactional
-    @DisplayName("회원이 Todo를 생성한다.")
+    @DisplayName("존재하는 회원이 Todo생성 시 Todo가 저장된다.")
     public void createTodoTest() {
         // given
         Member member = Member.create("tao@exemple.com", "1234");
@@ -76,7 +76,7 @@ class TodoServiceTest {
     }
 
     @Test
-    @DisplayName("회원이 생성된 Todo를 검색할 수 있다.")
+    @DisplayName("회원이 생성된 Todo를 검색하면 조회된다.")
     public void todoSearchTest() {
         // given
         Member member = Member.create("tao@exemple.com", "1234");
