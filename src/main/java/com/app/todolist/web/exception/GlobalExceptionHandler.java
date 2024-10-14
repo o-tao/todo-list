@@ -1,6 +1,6 @@
-package com.app.todolist.exception;
+package com.app.todolist.web.exception;
 
-import com.app.todolist.exception.dto.TodoExceptionResponse;
+import com.app.todolist.web.exception.dto.TodoExceptionResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Objects;
 
 @RestControllerAdvice
-public class GlobalControllerAdvice {
+public class GlobalExceptionHandler {
 
     @ExceptionHandler(BindException.class)
     public ResponseEntity<TodoExceptionResponse> responseBindException(BindException exception) {

@@ -1,4 +1,4 @@
-package com.app.todolist.exception;
+package com.app.todolist.web.exception;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
