@@ -1,4 +1,4 @@
-package com.app.todolist.api.todos.dto;
+package com.app.todolist.api.todos.service.dto;
 
 import com.app.todolist.domain.todos.TodoStatus;
 import lombok.Getter;
@@ -9,10 +9,10 @@ public class TodosWithOptions {
     private final Long memberId;
     private final String title;
     private final TodoStatus status;
-    private final int page;
-    private final int size;
+    private final long page;
+    private final long size;
 
-    public TodosWithOptions(Long memberId, String title, TodoStatus status, int page, int size) {
+    public TodosWithOptions(Long memberId, String title, TodoStatus status, long page, long size) {
         this.memberId = memberId;
         this.title = title;
         this.status = status;

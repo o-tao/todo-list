@@ -1,18 +1,20 @@
-package com.app.todolist.api.todos;
+package com.app.todolist.api.todos.service;
 
-import com.app.todolist.api.todos.dto.TodosWithOptions;
+import com.app.todolist.api.todos.controller.dto.TodoSearchResponse;
+import com.app.todolist.api.todos.service.dto.TodosWithOptions;
 import com.app.todolist.domain.members.Member;
 import com.app.todolist.domain.members.repository.MemberRepository;
 import com.app.todolist.domain.todos.Todo;
 import com.app.todolist.domain.todos.repository.TodoQueryRepository;
 import com.app.todolist.domain.todos.repository.TodoRepository;
-import com.app.todolist.exception.ErrorCode;
-import com.app.todolist.exception.TodoApplicationException;
+import com.app.todolist.web.exception.ErrorCode;
+import com.app.todolist.web.exception.TodoApplicationException;
+import com.app.todolist.web.util.PaginationResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -34,8 +36,14 @@ public class TodoService {
         return todoRepository.save(Todo.create(member, title, content));
     }
 
-    public Page<Todo> searchTodosByOptions(TodosWithOptions todosWithOptions, Pageable pageable) {
+    public PaginationResponse<TodoSearchResponse> searchTodosByOptions(TodosWithOptions todosWithOptions) {
         findMemberById(todosWithOptions.getMemberId());
-        return todoQueryRepository.findByTitleContains(todosWithOptions, pageable);
+        List<Todo> todos = todoQueryRepository.findTodosByOptions(todosWithOptions);
+        long totalElements = todoQueryRepository.countByTodo(todosWithOptions);
+        return PaginationResponse.of(
+                todos.stream().map(TodoSearchResponse::of).toList(),
+                todosWithOptions.getSize(),
+                totalElements
+        );
     }
 }

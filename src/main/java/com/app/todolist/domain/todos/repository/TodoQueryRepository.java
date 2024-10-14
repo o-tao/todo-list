@@ -1,14 +1,11 @@
 package com.app.todolist.domain.todos.repository;
 
-import com.app.todolist.api.todos.dto.TodosWithOptions;
+import com.app.todolist.api.todos.service.dto.TodosWithOptions;
 import com.app.todolist.domain.todos.Todo;
 import com.app.todolist.domain.todos.TodoStatus;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -21,28 +18,29 @@ public class TodoQueryRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
 
-    public Page<Todo> findByTitleContains(TodosWithOptions todosWithOptions, Pageable pageable) {
-        long total = jpaQueryFactory
+    public List<Todo> findTodosByOptions(TodosWithOptions todosWithOptions) {
+        return jpaQueryFactory
                 .selectFrom(todo)
                 .where(
                         todo.member.id.eq(todosWithOptions.getMemberId())
                                 .and(titleCondition(todosWithOptions.getTitle()))
                                 .and(statusCondition(todosWithOptions.getStatus()))
                 )
-                .fetch().size();
-
-        List<Todo> results = jpaQueryFactory
-                .selectFrom(todo)
-                .where(
-                        todo.member.id.eq(todosWithOptions.getMemberId())
-                                .and(titleCondition(todosWithOptions.getTitle()))
-                                .and(statusCondition(todosWithOptions.getStatus()))
-                )
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
+                .offset((todosWithOptions.getPage() - 1) * todosWithOptions.getSize())
+                .limit(todosWithOptions.getSize())
                 .fetch();
+    }
 
-        return new PageImpl<>(results, pageable, total);
+    public Long countByTodo(TodosWithOptions todosWithOptions) {
+        return jpaQueryFactory
+                .select(todo.count())
+                .from(todo)
+                .where(
+                        todo.member.id.eq(todosWithOptions.getMemberId())
+                                .and(titleCondition(todosWithOptions.getTitle()))
+                                .and(statusCondition(todosWithOptions.getStatus()))
+                )
+                .fetchOne();
     }
 
     private BooleanExpression titleCondition(String title) {
