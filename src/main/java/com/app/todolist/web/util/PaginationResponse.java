@@ -1,16 +1,14 @@
 package com.app.todolist.web.util;
 
-import lombok.Builder;
 import lombok.Getter;
 
 import java.util.List;
 
-@Builder
 @Getter
 public class PaginationResponse<T> {
-    private List<T> contents;
-    private long totalElements;
-    private int totalPages;
+    private final List<T> contents;
+    private final long totalElements;
+    private final int totalPages;
 
     private PaginationResponse(List<T> contents, long size, long totalElements) {
         this.contents = contents;
