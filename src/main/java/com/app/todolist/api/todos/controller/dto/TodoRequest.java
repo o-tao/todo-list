@@ -1,4 +1,4 @@
-package com.app.todolist.api.todos.dto;
+package com.app.todolist.api.todos.controller.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
