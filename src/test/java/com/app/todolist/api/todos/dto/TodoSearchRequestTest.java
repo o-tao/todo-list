@@ -1,5 +1,6 @@
 package com.app.todolist.api.todos.dto;
 
+import com.app.todolist.api.todos.controller.dto.TodoSearchRequest;
 import com.app.todolist.domain.todos.TodoStatus;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
