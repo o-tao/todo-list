@@ -1,4 +1,4 @@
-package com.app.todolist.api.todos.dto;
+package com.app.todolist.api.todos.controller.dto;
 
 import com.app.todolist.domain.todos.Todo;
 import com.app.todolist.domain.todos.TodoStatus;
