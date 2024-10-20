@@ -23,8 +23,8 @@ public class TodoQueryRepository {
                 .selectFrom(todo)
                 .where(
                         todo.member.id.eq(todosWithOptions.getMemberId())
-                                .and(titleCondition(todosWithOptions.getTitle()))
-                                .and(statusCondition(todosWithOptions.getStatus()))
+                                .and(containsTitle(todosWithOptions.getTitle()))
+                                .and(eqStatus(todosWithOptions.getStatus()))
                 )
                 .offset((todosWithOptions.getPage() - 1) * todosWithOptions.getSize())
                 .limit(todosWithOptions.getSize())
@@ -37,17 +37,17 @@ public class TodoQueryRepository {
                 .from(todo)
                 .where(
                         todo.member.id.eq(todosWithOptions.getMemberId())
-                                .and(titleCondition(todosWithOptions.getTitle()))
-                                .and(statusCondition(todosWithOptions.getStatus()))
+                                .and(containsTitle(todosWithOptions.getTitle()))
+                                .and(eqStatus(todosWithOptions.getStatus()))
                 )
                 .fetchOne();
     }
 
-    private BooleanExpression titleCondition(String title) {
+    private BooleanExpression containsTitle(String title) {
         return title != null ? todo.title.contains(title) : null;
     }
 
-    private BooleanExpression statusCondition(TodoStatus status) {
+    private BooleanExpression eqStatus(TodoStatus status) {
         return status != null ? todo.status.eq(status) : null;
     }
 }
