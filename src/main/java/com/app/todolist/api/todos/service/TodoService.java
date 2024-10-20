@@ -36,6 +36,7 @@ public class TodoService {
         long totalElements = todoQueryRepository.countByTodo(todosWithOptions);
         return PaginationResponse.of(
                 todos.stream().map(TodoSearchResponse::of).toList(),
+                todosWithOptions.getPage(),
                 todosWithOptions.getSize(),
                 totalElements
         );
