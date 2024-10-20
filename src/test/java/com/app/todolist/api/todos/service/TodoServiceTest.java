@@ -1,7 +1,7 @@
 package com.app.todolist.api.todos.service;
 
-import com.app.todolist.api.todos.controller.dto.TodoSearchRequest;
 import com.app.todolist.api.todos.controller.dto.TodoSearchResponse;
+import com.app.todolist.api.todos.service.dto.TodosWithOptions;
 import com.app.todolist.domain.members.Member;
 import com.app.todolist.domain.members.repository.MemberRepository;
 import com.app.todolist.domain.todos.Todo;
@@ -75,7 +75,7 @@ class TodoServiceTest {
     }
 
     @Test
-    @DisplayName("회원이 생성된 Todo를 검색하면 조회된다.")
+    @DisplayName("회원 본인이 생성한 Todo를 검색하면 검색한 회원의 Todo가 조회된다.")
     public void todoSearchTest() {
         // given
         Member member = Member.create("tao@exemple.com", "1234");
@@ -83,13 +83,12 @@ class TodoServiceTest {
 
         Todo todo = todoService.createTodo(savedMember.getId(), "todo title", "hello");
 
-        TodoSearchRequest searchRequest = new TodoSearchRequest();
-        searchRequest.setMemberId(member.getId());
-        searchRequest.setTitle("todo title");
-        searchRequest.setStatus(TodoStatus.TODO);
+        TodosWithOptions todosWithOptions = new TodosWithOptions(
+                member.getId(), "todo title", TodoStatus.TODO, 1, 10
+        );
 
         // when
-        PaginationResponse<TodoSearchResponse> searchedTodos = todoService.searchTodosByOptions(searchRequest.toOption());
+        PaginationResponse<TodoSearchResponse> searchedTodos = todoService.searchTodosByOptions(todosWithOptions);
 
         // then
         assertThat(searchedTodos.getContents()).hasSize(1);
@@ -113,14 +112,12 @@ class TodoServiceTest {
         todoService.createTodo(savedMember.getId(), "hello tao! test title", "test");
         todoService.createTodo(savedMember.getId(), "hello world title", "test");
 
-        TodoSearchRequest searchRequest = new TodoSearchRequest();
-        searchRequest.setMemberId(member.getId());
-        searchRequest.setTitle("tao");
-        searchRequest.setStatus(TodoStatus.TODO);
-
+        TodosWithOptions todosWithOptions = new TodosWithOptions(
+                member.getId(), "tao", TodoStatus.TODO, 1, 10
+        );
 
         // when
-        PaginationResponse<TodoSearchResponse> searchedTodos = todoService.searchTodosByOptions(searchRequest.toOption());
+        PaginationResponse<TodoSearchResponse> searchedTodos = todoService.searchTodosByOptions(todosWithOptions);
 
         // then
         assertThat(searchedTodos.getContents()).hasSize(3);
@@ -140,13 +137,12 @@ class TodoServiceTest {
         todoService.createTodo(savedMember.getId(), "hello! test title", "test");
         todoService.createTodo(savedMember.getId(), "hello world title", "test");
 
-        TodoSearchRequest searchRequest = new TodoSearchRequest();
-        searchRequest.setMemberId(member.getId());
-        searchRequest.setTitle("tao");
-        searchRequest.setStatus(TodoStatus.TODO);
+        TodosWithOptions todosWithOptions = new TodosWithOptions(
+                member.getId(), "tao", TodoStatus.TODO, 1, 10
+        );
 
         // when
-        PaginationResponse<TodoSearchResponse> searchedTodos = todoService.searchTodosByOptions(searchRequest.toOption());
+        PaginationResponse<TodoSearchResponse> searchedTodos = todoService.searchTodosByOptions(todosWithOptions);
 
         // then
         assertThat(searchedTodos.getContents()).isEmpty();
@@ -156,14 +152,13 @@ class TodoServiceTest {
     @DisplayName("존재하지 않는 회원이 todo를 검색시 예외가 발생한다.")
     public void todoSearchMemberValidateTest() {
         // given
-        TodoSearchRequest searchRequest = new TodoSearchRequest();
-        searchRequest.setMemberId(-1L);
-        searchRequest.setTitle("todo title");
-        searchRequest.setStatus(TodoStatus.TODO);
+        TodosWithOptions todosWithOptions = new TodosWithOptions(
+                -1L, "todo title", TodoStatus.TODO, 1, 10
+        );
 
         // when
         TodoApplicationException exception = assertThrows(TodoApplicationException.class,
-                () -> todoService.searchTodosByOptions(searchRequest.toOption()));
+                () -> todoService.searchTodosByOptions(todosWithOptions));
 
         // then
         assertThat(exception).isInstanceOf(TodoApplicationException.class);

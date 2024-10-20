@@ -1,6 +1,6 @@
 package com.app.todolist.domain.todos.repository;
 
-import com.app.todolist.api.todos.controller.dto.TodoSearchRequest;
+import com.app.todolist.api.todos.service.dto.TodosWithOptions;
 import com.app.todolist.domain.members.Member;
 import com.app.todolist.domain.members.repository.MemberRepository;
 import com.app.todolist.domain.todos.Todo;
@@ -32,7 +32,7 @@ class TodoQueryRepositoryTest {
     }
 
     @Test
-    @DisplayName("회원이 생성된 Todo를 검색하면 조회된다.")
+    @DisplayName("회원 본인이 생성한 Todo를 검색하면 검색한 회원의 Todo가 조회된다.")
     public void todoSearchTest() {
         // given
         Member member = Member.create("tao@exemple.com", "1234");
@@ -41,13 +41,12 @@ class TodoQueryRepositoryTest {
         Todo todo = Todo.create(member, "todo title", "hello");
         todoRepository.save(todo);
 
-        TodoSearchRequest searchRequest = new TodoSearchRequest();
-        searchRequest.setMemberId(member.getId());
-        searchRequest.setTitle("todo title");
-        searchRequest.setStatus(TodoStatus.TODO);
+        TodosWithOptions todosWithOptions = new TodosWithOptions(
+                member.getId(), "todo title", TodoStatus.TODO, 1, 10
+        );
 
         // when
-        List<Todo> titleContains = todoQueryRepository.findTodosByOptions(searchRequest.toOption());
+        List<Todo> titleContains = todoQueryRepository.findTodosByOptions(todosWithOptions);
 
         // then
         assertThat(titleContains).hasSize(1);
@@ -73,13 +72,12 @@ class TodoQueryRepositoryTest {
         Todo todo5 = Todo.create(member, "hello world title", "test");
         todoRepository.saveAll(List.of(todo1, todo2, todo3, todo4, todo5));
 
-        TodoSearchRequest searchRequest = new TodoSearchRequest();
-        searchRequest.setMemberId(member.getId());
-        searchRequest.setTitle("tao");
-        searchRequest.setStatus(TodoStatus.TODO);
+        TodosWithOptions todosWithOptions = new TodosWithOptions(
+                member.getId(), "tao", TodoStatus.TODO, 1, 10
+        );
 
         // when
-        List<Todo> titleContains = todoQueryRepository.findTodosByOptions(searchRequest.toOption());
+        List<Todo> titleContains = todoQueryRepository.findTodosByOptions(todosWithOptions);
 
         // then
         assertThat(titleContains).hasSize(3);
@@ -100,13 +98,12 @@ class TodoQueryRepositoryTest {
         Todo todo5 = Todo.create(member, "hello world title", "test");
         todoRepository.saveAll(List.of(todo1, todo2, todo3, todo4, todo5));
 
-        TodoSearchRequest searchRequest = new TodoSearchRequest();
-        searchRequest.setMemberId(member.getId());
-        searchRequest.setTitle("tao");
-        searchRequest.setStatus(TodoStatus.TODO);
+        TodosWithOptions todosWithOptions = new TodosWithOptions(
+                member.getId(), "tao", TodoStatus.TODO, 1, 10
+        );
 
         // when
-        List<Todo> titleContains = todoQueryRepository.findTodosByOptions(searchRequest.toOption());
+        List<Todo> titleContains = todoQueryRepository.findTodosByOptions(todosWithOptions);
 
         // then
         assertThat(titleContains).isEmpty();
@@ -122,13 +119,12 @@ class TodoQueryRepositoryTest {
         Todo todo = Todo.create(member, "todo title", "hello");
         todoRepository.save(todo);
 
-        TodoSearchRequest searchRequest = new TodoSearchRequest();
-        searchRequest.setMemberId(member.getId());
-        searchRequest.setTitle(null);
-        searchRequest.setStatus(TodoStatus.TODO);
+        TodosWithOptions todosWithOptions = new TodosWithOptions(
+                member.getId(), null, TodoStatus.TODO, 1, 10
+        );
 
         // when
-        List<Todo> titleContains = todoQueryRepository.findTodosByOptions(searchRequest.toOption());
+        List<Todo> titleContains = todoQueryRepository.findTodosByOptions(todosWithOptions);
 
         // then
         assertThat(titleContains).hasSize(1);
@@ -150,13 +146,12 @@ class TodoQueryRepositoryTest {
         Todo todo = Todo.create(member, "todo title", "hello");
         todoRepository.save(todo);
 
-        TodoSearchRequest searchRequest = new TodoSearchRequest();
-        searchRequest.setMemberId(member.getId());
-        searchRequest.setTitle("");
-        searchRequest.setStatus(TodoStatus.TODO);
+        TodosWithOptions todosWithOptions = new TodosWithOptions(
+                member.getId(), "", TodoStatus.TODO, 1, 10
+        );
 
         // when
-        List<Todo> titleContains = todoQueryRepository.findTodosByOptions(searchRequest.toOption());
+        List<Todo> titleContains = todoQueryRepository.findTodosByOptions(todosWithOptions);
 
         // then
         assertThat(titleContains).hasSize(1);
@@ -178,13 +173,12 @@ class TodoQueryRepositoryTest {
         Todo todo = Todo.create(member, "todo title", "hello");
         todoRepository.save(todo);
 
-        TodoSearchRequest searchRequest = new TodoSearchRequest();
-        searchRequest.setMemberId(member.getId());
-        searchRequest.setTitle("todo title");
-        searchRequest.setStatus(null);
+        TodosWithOptions todosWithOptions = new TodosWithOptions(
+                member.getId(), "todo title", null, 1, 10
+        );
 
         // when
-        List<Todo> titleContains = todoQueryRepository.findTodosByOptions(searchRequest.toOption());
+        List<Todo> titleContains = todoQueryRepository.findTodosByOptions(todosWithOptions);
 
         // then
         assertThat(titleContains).hasSize(1);
@@ -208,16 +202,15 @@ class TodoQueryRepositoryTest {
         Todo todo3 = Todo.create(member, "title hello tao", "hello");
         todoRepository.saveAll(List.of(todo1, todo2, todo3));
 
-        TodoSearchRequest searchRequest = new TodoSearchRequest();
-        searchRequest.setMemberId(member.getId());
-        searchRequest.setTitle("tao");
-        searchRequest.setStatus(TodoStatus.TODO);
-        searchRequest.setSize(1);
-        long totalElements = todoQueryRepository.countByTodo(searchRequest.toOption());
-        int totalPages = (int) Math.ceil((double) totalElements / searchRequest.getSize());
+        TodosWithOptions todosWithOptions = new TodosWithOptions(
+                member.getId(), "tao", TodoStatus.TODO, 1, 1
+        );
+
+        long totalElements = todoQueryRepository.countByTodo(todosWithOptions);
+        int totalPages = (int) Math.ceil((double) totalElements / todosWithOptions.getSize());
 
         // when
-        List<Todo> titleContains = todoQueryRepository.findTodosByOptions(searchRequest.toOption());
+        List<Todo> titleContains = todoQueryRepository.findTodosByOptions(todosWithOptions);
 
         // then
         assertThat(titleContains).hasSize(1);
@@ -237,27 +230,25 @@ class TodoQueryRepositoryTest {
         Todo todo3 = Todo.create(member, "hello tao title", "hello");
         todoRepository.saveAll(List.of(todo1, todo2, todo3));
 
-        TodoSearchRequest searchRequest = new TodoSearchRequest();
-        searchRequest.setMemberId(member.getId());
-        searchRequest.setTitle("tao");
-        searchRequest.setStatus(TodoStatus.TODO);
-        searchRequest.setSize(1);
-        long totalElements = todoQueryRepository.countByTodo(searchRequest.toOption());
-        int totalPages = (int) Math.ceil((double) totalElements / searchRequest.getSize());
-        System.out.println(totalPages + "~~~~~~~~~~~~~~~~~~~~~!!!!!!!!!!!!!");
+        TodosWithOptions todosWithOptions = new TodosWithOptions(
+                member.getId(), "tao", TodoStatus.TODO, 1, 1
+        );
 
-        // when
-        List<Todo> titleContains = todoQueryRepository.findTodosByOptions(searchRequest.toOption());
+        long totalElements = todoQueryRepository.countByTodo(todosWithOptions);
+        int totalPages = (int) Math.ceil((double) totalElements / todosWithOptions.getSize());
 
-        // then
-        assertThat(titleContains).hasSize(1);
         for (int i = 1; i < totalPages; i++) {
-            searchRequest.setPage(i);
-            searchRequest.setSize(1);
-            List<Todo> pageContent = todoQueryRepository.findTodosByOptions(searchRequest.toOption());
+            TodosWithOptions pagedOptions = new TodosWithOptions(
+                    member.getId(), "tao", TodoStatus.TODO, i, 1
+            );
 
+            // when
+            List<Todo> pageContent = todoQueryRepository.findTodosByOptions(pagedOptions);
+
+            // then
             assertThat(pageContent).isNotEmpty();
             assertThat(pageContent.getFirst().getTitle()).contains("tao");
+            assertThat(pageContent).hasSize(1);
         }
     }
 }
