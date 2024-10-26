@@ -1,8 +1,8 @@
 package com.app.todolist.api.members;
 
 import com.app.todolist.domain.members.Member;
-import com.app.todolist.domain.members.MemberRepository;
-import com.app.todolist.exception.TodoApplicationException;
+import com.app.todolist.domain.members.repository.MemberRepository;
+import com.app.todolist.web.exception.TodoApplicationException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
