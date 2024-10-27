@@ -24,20 +24,20 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<TodoExceptionResponse> responseMethodArgumentNotValidException(HttpMessageNotReadableException exception) {
+    public ResponseEntity<TodoExceptionResponse> requestHttpMessageNotReadableException(HttpMessageNotReadableException exception) {
         InvalidFormatException invalidFormatException = (InvalidFormatException) exception.getCause();
         String fieldName = invalidFormatException.getPath().getFirst().getFieldName();
         String targetType = invalidFormatException.getTargetType().getSimpleName();
 
         String errorMessage = String.format(ErrorCode.INVALID_JSON_INPUT.getMessage(), fieldName, targetType);
         HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
-        
+
         return new ResponseEntity<>(
                 new TodoExceptionResponse(httpStatus, Objects.requireNonNull(errorMessage)), httpStatus);
     }
 
     @ExceptionHandler(TodoApplicationException.class)
-    public ResponseEntity<TodoExceptionResponse> responseApplicationException(TodoApplicationException exception) {
+    public ResponseEntity<TodoExceptionResponse> responseTodoApplicationException(TodoApplicationException exception) {
         TodoExceptionResponse errorResult = new TodoExceptionResponse(
                 exception.getExceptionHttpStatus(), exception.getExceptionMessage());
         return new ResponseEntity<>(errorResult, exception.getExceptionHttpStatus());
