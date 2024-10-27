@@ -4,10 +4,12 @@ import com.app.todolist.domain.BaseEntity;
 import com.app.todolist.domain.members.Member;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
 @Table(name = "todos")
+@NoArgsConstructor
 public class Todo extends BaseEntity {
 
     @Column(nullable = false, length = 30)
@@ -23,6 +25,11 @@ public class Todo extends BaseEntity {
     @JoinColumn(name = "member_id")
     private Member member;
 
+    public Todo(String title, String content) {
+        this.title = title;
+        this.content = content;
+    }
+
     public static Todo create(Member member, String title, String content) {
         Todo todo = new Todo();
         todo.title = title;
@@ -30,5 +37,10 @@ public class Todo extends BaseEntity {
         todo.status = TodoStatus.TODO;
         todo.member = member;
         return todo;
+    }
+
+    public void update(String title, String content) {
+        this.title = title;
+        this.content = content;
     }
 }

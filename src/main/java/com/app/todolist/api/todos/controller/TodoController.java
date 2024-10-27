@@ -1,9 +1,6 @@
 package com.app.todolist.api.todos.controller;
 
-import com.app.todolist.api.todos.controller.dto.TodoRequest;
-import com.app.todolist.api.todos.controller.dto.TodoResponse;
-import com.app.todolist.api.todos.controller.dto.TodoSearchRequest;
-import com.app.todolist.api.todos.controller.dto.TodoSearchResponse;
+import com.app.todolist.api.todos.controller.dto.*;
 import com.app.todolist.api.todos.service.TodoService;
 import com.app.todolist.domain.todos.Todo;
 import com.app.todolist.web.util.PaginationResponse;
@@ -28,5 +25,12 @@ public class TodoController {
     @GetMapping
     public PaginationResponse<TodoSearchResponse> searchTodosByOptions(@Valid TodoSearchRequest searchRequest) {
         return todoService.searchTodosByOptions(searchRequest.toOption());
+    }
+
+    @PutMapping("/{todoId}")
+    public TodoUpdateResponse updateTodo(@PathVariable Long todoId,
+                                         @RequestBody @Valid TodoUpdateRequest todoUpdateRequest) {
+        Todo updatedTodo = todoService.updateTodo(todoId, todoUpdateRequest.toEntity());
+        return TodoUpdateResponse.of(updatedTodo);
     }
 }
