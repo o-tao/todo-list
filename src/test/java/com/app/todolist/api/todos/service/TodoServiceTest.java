@@ -16,8 +16,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class TodoServiceTest {
@@ -163,6 +165,111 @@ class TodoServiceTest {
         // then
         assertThat(exception).isInstanceOf(TodoApplicationException.class);
         assertThat(exception.getExceptionMessage()).isEqualTo("회원이 존재하지 않습니다.");
+    }
+
+    @Test
+    @DisplayName("존재하는 todo의 title만 변경 될 경우 title만 수정된다.")
+    public void todoTitleUpdateTest() {
+        // given
+        Member member = Member.create("tao@exemple.com", "1234");
+        Member savedMember = memberRepository.save(member);
+        Todo todo = Todo.create(savedMember, "todo-list", "hello");
+        Todo existingTodo = todoRepository.save(todo);
+
+        Long todoId = existingTodo.getId();
+        Todo updateTodo = new Todo("title update", "hello");
+
+        // when
+        todoService.updateTodo(todoId, updateTodo);
+
+        // then
+        Todo updatedTodo = todoRepository.findById(todoId).orElseThrow();
+        assertEquals(updateTodo.getTitle(), updatedTodo.getTitle());
+        assertEquals(todo.getContent(), updatedTodo.getContent());
+    }
+
+    @Test
+    @DisplayName("존재하는 todo의 content만 변경 될 경우 content만 수정된다.")
+    public void todoContentUpdateTest() {
+        // given
+        Member member = Member.create("tao@exemple.com", "1234");
+        Member savedMember = memberRepository.save(member);
+        Todo todo = Todo.create(savedMember, "todo-list", "hello");
+        Todo existingTodo = todoRepository.save(todo);
+
+        Long todoId = existingTodo.getId();
+        Todo updateTodo = new Todo("todo-list", "content update");
+
+        // when
+        todoService.updateTodo(todoId, updateTodo);
+
+        // then
+        Todo updatedTodo = todoRepository.findById(todoId).orElseThrow();
+        assertEquals(todo.getTitle(), updatedTodo.getTitle());
+        assertEquals(updateTodo.getContent(), updatedTodo.getContent());
+    }
+
+    @Test
+    @DisplayName("존재하는 todo의 title과 content가 모두 변경될 경우 모두 수정된다.")
+    public void todoTitleAndContentUpdateTest() {
+        // given
+        Member member = Member.create("tao@exemple.com", "1234");
+        Member savedMember = memberRepository.save(member);
+        Todo todo = Todo.create(savedMember, "todo-list", "hello");
+        Todo existingTodo = todoRepository.save(todo);
+
+        Long todoId = existingTodo.getId();
+        Todo updateTodo = new Todo("title update", "content update");
+
+        // when
+        todoService.updateTodo(todoId, updateTodo);
+
+        // then
+        Todo updatedTodo = todoRepository.findById(todoId).orElseThrow();
+        assertEquals(updateTodo.getTitle(), updatedTodo.getTitle());
+        assertEquals(updateTodo.getContent(), updatedTodo.getContent());
+    }
+
+    @Test
+    @DisplayName("존재하는 todo가 수정 될 경우 updatedAt만 변경된다.")
+    public void todoUpdatedAtTest() {
+        // given
+        Member member = Member.create("tao@exemple.com", "1234");
+        Member savedMember = memberRepository.save(member);
+        Todo todo = Todo.create(savedMember, "todo-list", "hello");
+        Todo existingTodo = todoRepository.save(todo);
+
+        Long todoId = existingTodo.getId();
+        LocalDateTime previousCreatedAt = existingTodo.getCreatedAt();
+        LocalDateTime previousUpdatedAt = existingTodo.getUpdatedAt();
+        Todo updateTodo = new Todo("title update", "content update");
+
+        // when
+        todoService.updateTodo(todoId, updateTodo);
+
+        // then
+        Todo updatedTodo = todoRepository.findById(todoId).orElseThrow();
+        assertEquals(previousCreatedAt, updatedTodo.getCreatedAt());
+        assertTrue(updatedTodo.getUpdatedAt().isAfter(previousUpdatedAt));
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 todo 수정 시 예외가 발생한다.")
+    public void todoUpdatedValidateTest() {
+        // given
+        Member member = Member.create("tao@exemple.com", "1234");
+        Member savedMember = memberRepository.save(member);
+        Todo todo = Todo.create(savedMember, "todo-list", "hello");
+        todoRepository.save(todo);
+        Todo updateTodo = new Todo("title update", "content update");
+
+        // when
+        TodoApplicationException exception = assertThrows(TodoApplicationException.class,
+                () -> todoService.updateTodo(-1L, updateTodo));
+
+        // then
+        assertThat(exception).isInstanceOf(TodoApplicationException.class);
+        assertThat(exception.getExceptionMessage()).isEqualTo("TODO가 존재하지 않습니다.");
     }
 
 }
