@@ -86,7 +86,7 @@ public class GlobalExceptionHandlerTest {
     }
 
     @Test
-    @DisplayName("커스텀 예외 TodoApplicationException 발생 시 지정한 ErrorCode를 처리한다.")
+    @DisplayName("커스텀 예외 TodoApplicationException 발생 시 지정한 ErrorCode를 응답한다.")
     public void responseTodoApplicationExceptionTest() {
         // given
         GlobalExceptionHandler globalExceptionHandler = new GlobalExceptionHandler();
