@@ -34,8 +34,8 @@ public class TodoService {
     }
 
     @Transactional
-    public Todo updateTodo(Long todoId, Todo todo) {
-        Todo existingTodo = findTodoById(todoId);
+    public Todo updateTodo(Long id, Todo todo) {
+        Todo existingTodo = findTodoById(id);
         existingTodo.update(todo.getTitle(), todo.getContent());
         return existingTodo;
     }
@@ -52,8 +52,8 @@ public class TodoService {
         );
     }
 
-    private Todo findTodoById(Long todoId) {
-        return todoRepository.findById(todoId).orElseThrow(()
+    private Todo findTodoById(Long id) {
+        return todoRepository.findById(id).orElseThrow(()
                 -> new TodoApplicationException(ErrorCode.TODO_NOT_FOUND)
         );
     }
