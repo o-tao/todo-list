@@ -27,10 +27,10 @@ public class TodoController {
         return todoService.searchTodosByOptions(searchRequest.toOption());
     }
 
-    @PutMapping("/{todoId}")
-    public TodoUpdateResponse updateTodo(@PathVariable Long todoId,
+    @PutMapping("/{id}")
+    public TodoUpdateResponse updateTodo(@PathVariable Long id,
                                          @RequestBody @Valid TodoUpdateRequest todoUpdateRequest) {
-        Todo updatedTodo = todoService.updateTodo(todoId, todoUpdateRequest.toEntity());
+        Todo updatedTodo = todoService.updateTodo(id, todoUpdateRequest.toEntity());
         return TodoUpdateResponse.of(updatedTodo);
     }
 }
