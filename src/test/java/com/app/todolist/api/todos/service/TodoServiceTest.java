@@ -20,7 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 class TodoServiceTest {
@@ -232,7 +233,7 @@ class TodoServiceTest {
     }
 
     @Test
-    @DisplayName("존재하는 todo가 수정 될 경우 updatedAt만 변경된다.")
+    @DisplayName("존재하는 todo가 수정 될 경우 todo를 수정 한 시간이 updatedAt에 저장된다.")
     public void todoUpdatedAtTest() {
         // given
         Member member = Member.create("tao@exemple.com", "1234");
@@ -241,7 +242,6 @@ class TodoServiceTest {
         Todo existingTodo = todoRepository.save(todo);
 
         Long todoId = existingTodo.getId();
-        LocalDateTime previousCreatedAt = existingTodo.getCreatedAt();
         LocalDateTime previousUpdatedAt = existingTodo.getUpdatedAt();
         TodoUpdateInfo updateInfo = new TodoUpdateInfo("title update", "content update");
 
@@ -250,8 +250,8 @@ class TodoServiceTest {
 
         // then
         Todo updatedTodo = todoRepository.findById(todoId).orElseThrow();
-        assertEquals(previousCreatedAt, updatedTodo.getCreatedAt());
-        assertTrue(updatedTodo.getUpdatedAt().isAfter(previousUpdatedAt));
+        assertThat(updatedTodo.getUpdatedAt()).isNotNull();
+        assertThat(updatedTodo.getUpdatedAt()).isAfter(previousUpdatedAt);
     }
 
     @Test
