@@ -39,8 +39,8 @@ class TodoServiceTest {
         memberRepository.deleteAllInBatch();
     }
 
-    private Member createMember(String email, String password) {
-        Member member = Member.create(email, password);
+    private Member createMember() {
+        Member member = Member.create("tao@exemple.com", "1234");
         return memberRepository.save(member);
     }
 
@@ -54,7 +54,7 @@ class TodoServiceTest {
     @DisplayName("존재하는 회원이 Todo생성 시 Todo가 저장된다.")
     public void createTodoTest() {
         // given
-        Member savedMember = createMember("tao@exemple.com", "1234");
+        Member savedMember = createMember();
         String title = "tao title";
         String content = "tao content";
         Long memberId = savedMember.getId();
@@ -91,7 +91,7 @@ class TodoServiceTest {
     @DisplayName("회원 본인이 생성한 Todo를 검색하면 검색한 회원의 Todo가 조회된다.")
     public void todoSearchTest() {
         // given
-        Member savedMember = createMember("tao@exemple.com", "1234");
+        Member savedMember = createMember();
 
         Todo todo = createTodo(savedMember, "todo title", "hello");
 
@@ -115,7 +115,7 @@ class TodoServiceTest {
     @DisplayName("title에 'tao'를 포함한 Todo 검색결과를 가져온다.")
     public void searchTodosByTitleContainsTest() {
         // given
-        Member savedMember = createMember("tao@exemple.com", "1234");
+        Member savedMember = createMember();
 
         createTodo(savedMember, "test todo title", "hello");
         createTodo(savedMember, "hello tao! title", "world");
@@ -139,7 +139,7 @@ class TodoServiceTest {
     @DisplayName("title에 'tao'를 포함한 Todo가 없을 경우 빈 리스트를 반환한다.")
     public void searchTodosByTitleContains_isEmpty() {
         // given
-        Member savedMember = createMember("tao@exemple.com", "1234");
+        Member savedMember = createMember();
 
         createTodo(savedMember, "test todo title", "hello");
         createTodo(savedMember, "hello! title", "world");
@@ -179,7 +179,7 @@ class TodoServiceTest {
     @DisplayName("존재하는 todo의 title만 변경 될 경우 title만 수정된다.")
     public void todoTitleUpdateTest() {
         // given
-        Member savedMember = createMember("tao@exemple.com", "1234");
+        Member savedMember = createMember();
         Todo existingTodo = createTodo(savedMember, "todo-list", "hello");
 
         Long todoId = existingTodo.getId();
@@ -198,7 +198,7 @@ class TodoServiceTest {
     @DisplayName("존재하는 todo의 content만 변경 될 경우 content만 수정된다.")
     public void todoContentUpdateTest() {
         // given
-        Member savedMember = createMember("tao@exemple.com", "1234");
+        Member savedMember = createMember();
         Todo existingTodo = createTodo(savedMember, "todo-list", "hello");
 
         Long todoId = existingTodo.getId();
@@ -217,7 +217,7 @@ class TodoServiceTest {
     @DisplayName("존재하는 todo의 title과 content가 모두 변경될 경우 모두 수정된다.")
     public void todoTitleAndContentUpdateTest() {
         // given
-        Member savedMember = createMember("tao@exemple.com", "1234");
+        Member savedMember = createMember();
         Todo existingTodo = createTodo(savedMember, "todo-list", "hello");
 
         Long todoId = existingTodo.getId();
@@ -236,7 +236,7 @@ class TodoServiceTest {
     @DisplayName("존재하는 todo가 수정 될 경우 todo를 수정 한 시간이 updatedAt에 저장된다.")
     public void todoUpdatedAtTest() {
         // given
-        Member savedMember = createMember("tao@exemple.com", "1234");
+        Member savedMember = createMember();
         Todo existingTodo = createTodo(savedMember, "todo-list", "hello");
 
         Long todoId = existingTodo.getId();
