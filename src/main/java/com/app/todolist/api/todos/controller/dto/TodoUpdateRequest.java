@@ -1,6 +1,6 @@
 package com.app.todolist.api.todos.controller.dto;
 
-import com.app.todolist.domain.todos.Todo;
+import com.app.todolist.api.todos.service.dto.TodoUpdateInfo;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -19,7 +19,7 @@ public class TodoUpdateRequest {
     @NotNull(message = "내용을 입력하세요.")
     private String content;
 
-    public Todo toEntity() {
-        return new Todo(title, content);
+    public TodoUpdateInfo toUpdate() {
+        return new TodoUpdateInfo(title, content);
     }
 }

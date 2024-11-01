@@ -2,6 +2,7 @@ package com.app.todolist.api.todos.service;
 
 import com.app.todolist.api.members.MemberService;
 import com.app.todolist.api.todos.controller.dto.TodoSearchResponse;
+import com.app.todolist.api.todos.service.dto.TodoUpdateInfo;
 import com.app.todolist.api.todos.service.dto.TodosWithOptions;
 import com.app.todolist.domain.members.Member;
 import com.app.todolist.domain.todos.Todo;
@@ -34,9 +35,9 @@ public class TodoService {
     }
 
     @Transactional
-    public Todo updateTodo(Long id, Todo todo) {
+    public Todo updateTodo(Long id, TodoUpdateInfo todoUpdateInfo) {
         Todo existingTodo = findTodoById(id);
-        existingTodo.update(todo.getTitle(), todo.getContent());
+        existingTodo.update(todoUpdateInfo.getTitle(), todoUpdateInfo.getContent());
         return existingTodo;
     }
 
