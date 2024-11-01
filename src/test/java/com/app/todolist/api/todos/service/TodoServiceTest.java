@@ -1,6 +1,7 @@
 package com.app.todolist.api.todos.service;
 
 import com.app.todolist.api.todos.controller.dto.TodoSearchResponse;
+import com.app.todolist.api.todos.service.dto.TodoUpdateInfo;
 import com.app.todolist.api.todos.service.dto.TodosWithOptions;
 import com.app.todolist.domain.members.Member;
 import com.app.todolist.domain.members.repository.MemberRepository;
@@ -177,14 +178,14 @@ class TodoServiceTest {
         Todo existingTodo = todoRepository.save(todo);
 
         Long todoId = existingTodo.getId();
-        Todo updateTodo = new Todo("title update", "hello");
+        TodoUpdateInfo updateInfo = new TodoUpdateInfo("title update", "hello");
 
         // when
-        todoService.updateTodo(todoId, updateTodo);
+        todoService.updateTodo(todoId, updateInfo);
 
         // then
         Todo updatedTodo = todoRepository.findById(todoId).orElseThrow();
-        assertEquals(updateTodo.getTitle(), updatedTodo.getTitle());
+        assertEquals(updateInfo.getTitle(), updatedTodo.getTitle());
         assertEquals(todo.getContent(), updatedTodo.getContent());
     }
 
@@ -198,15 +199,15 @@ class TodoServiceTest {
         Todo existingTodo = todoRepository.save(todo);
 
         Long todoId = existingTodo.getId();
-        Todo updateTodo = new Todo("todo-list", "content update");
+        TodoUpdateInfo updateInfo = new TodoUpdateInfo("todo-list", "content update");
 
         // when
-        todoService.updateTodo(todoId, updateTodo);
+        todoService.updateTodo(todoId, updateInfo);
 
         // then
         Todo updatedTodo = todoRepository.findById(todoId).orElseThrow();
         assertEquals(todo.getTitle(), updatedTodo.getTitle());
-        assertEquals(updateTodo.getContent(), updatedTodo.getContent());
+        assertEquals(updateInfo.getContent(), updatedTodo.getContent());
     }
 
     @Test
@@ -219,15 +220,15 @@ class TodoServiceTest {
         Todo existingTodo = todoRepository.save(todo);
 
         Long todoId = existingTodo.getId();
-        Todo updateTodo = new Todo("title update", "content update");
+        TodoUpdateInfo updateInfo = new TodoUpdateInfo("title update", "content update");
 
         // when
-        todoService.updateTodo(todoId, updateTodo);
+        todoService.updateTodo(todoId, updateInfo);
 
         // then
         Todo updatedTodo = todoRepository.findById(todoId).orElseThrow();
-        assertEquals(updateTodo.getTitle(), updatedTodo.getTitle());
-        assertEquals(updateTodo.getContent(), updatedTodo.getContent());
+        assertEquals(updateInfo.getTitle(), updatedTodo.getTitle());
+        assertEquals(updateInfo.getContent(), updatedTodo.getContent());
     }
 
     @Test
@@ -242,10 +243,10 @@ class TodoServiceTest {
         Long todoId = existingTodo.getId();
         LocalDateTime previousCreatedAt = existingTodo.getCreatedAt();
         LocalDateTime previousUpdatedAt = existingTodo.getUpdatedAt();
-        Todo updateTodo = new Todo("title update", "content update");
+        TodoUpdateInfo updateInfo = new TodoUpdateInfo("title update", "content update");
 
         // when
-        todoService.updateTodo(todoId, updateTodo);
+        todoService.updateTodo(todoId, updateInfo);
 
         // then
         Todo updatedTodo = todoRepository.findById(todoId).orElseThrow();
@@ -261,11 +262,11 @@ class TodoServiceTest {
         Member savedMember = memberRepository.save(member);
         Todo todo = Todo.create(savedMember, "todo-list", "hello");
         todoRepository.save(todo);
-        Todo updateTodo = new Todo("title update", "content update");
+        TodoUpdateInfo updateInfo = new TodoUpdateInfo("title update", "content update");
 
         // when
         TodoApplicationException exception = assertThrows(TodoApplicationException.class,
-                () -> todoService.updateTodo(-1L, updateTodo));
+                () -> todoService.updateTodo(-1L, updateInfo));
 
         // then
         assertThat(exception).isInstanceOf(TodoApplicationException.class);
