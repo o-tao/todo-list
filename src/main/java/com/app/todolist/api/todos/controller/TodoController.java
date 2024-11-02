@@ -39,4 +39,11 @@ public class TodoController {
         Todo updatedTodo = todoService.updateTodo(id, todoUpdateRequest.toUpdate());
         return TodoUpdateResponse.of(updatedTodo);
     }
+
+    @PutMapping("/status/{id}")
+    public TodoUpdateResponse updateTodoStatus(@PathVariable Long id,
+                                               @RequestBody @Valid TodoStatusUpdateRequest todoStatusUpdateRequest) {
+        Todo updateTodoStatus = todoService.updateTodoStatus(id, todoStatusUpdateRequest.getStatus());
+        return TodoUpdateResponse.of(updateTodoStatus);
+    }
 }
