@@ -297,4 +297,37 @@ class TodoServiceTest {
         assertThat(exception.getExceptionMessage()).isEqualTo("TODO가 존재하지 않습니다.");
     }
 
+    @Test
+    @DisplayName("존재하는 todo의 상태를 변경할 수 있다.")
+    public void todoStatusUpdateTest() {
+        // given
+        Member savedMember = createMember();
+        Todo existingTodo = createTodo(savedMember, "todo-list", "hello");
+
+        // when
+        todoService.updateTodoStatus(existingTodo.getId(), TodoStatus.DONE);
+
+        // then
+        Todo updatedTodo = todoRepository.findById(existingTodo.getId()).orElseThrow();
+        assertThat(updatedTodo.getStatus()).isEqualTo(TodoStatus.DONE);
+    }
+
+    @Test
+    @DisplayName("존재하는 todo의 상태가 변경 될 경우 변경 된 시간이 updatedAt에 저장된다.")
+    public void todoStatusUpdatedAtTest() {
+        // given
+        Member savedMember = createMember();
+        Todo existingTodo = createTodo(savedMember, "todo-list", "hello");
+
+        LocalDateTime previousUpdatedAt = existingTodo.getUpdatedAt();
+
+        // when
+        todoService.updateTodoStatus(existingTodo.getId(), TodoStatus.DONE);
+
+        // then
+        Todo updatedTodo = todoRepository.findById(existingTodo.getId()).orElseThrow();
+        assertThat(updatedTodo.getUpdatedAt()).isNotNull();
+        assertThat(updatedTodo.getUpdatedAt()).isAfter(previousUpdatedAt);
+    }
+
 }

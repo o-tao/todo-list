@@ -36,4 +36,8 @@ public class Todo extends BaseEntity {
         this.title = title;
         this.content = content;
     }
+
+    public void updateStatus(TodoStatus todoStatus) {
+        this.status = todoStatus;
+    }
 }

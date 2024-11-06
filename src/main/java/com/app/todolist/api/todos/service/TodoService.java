@@ -6,6 +6,7 @@ import com.app.todolist.api.todos.service.dto.TodoUpdateInfo;
 import com.app.todolist.api.todos.service.dto.TodosWithOptions;
 import com.app.todolist.domain.members.Member;
 import com.app.todolist.domain.todos.Todo;
+import com.app.todolist.domain.todos.TodoStatus;
 import com.app.todolist.domain.todos.repository.TodoQueryRepository;
 import com.app.todolist.domain.todos.repository.TodoRepository;
 import com.app.todolist.web.exception.ErrorCode;
@@ -38,6 +39,13 @@ public class TodoService {
     public Todo updateTodo(Long id, TodoUpdateInfo todoUpdateInfo) {
         Todo todo = findTodoById(id);
         todo.update(todoUpdateInfo.getTitle(), todoUpdateInfo.getContent());
+        return todo;
+    }
+
+    @Transactional
+    public Todo updateTodoStatus(Long id, TodoStatus todoStatus) {
+        Todo todo = findTodoById(id);
+        todo.updateStatus(todoStatus);
         return todo;
     }
 
