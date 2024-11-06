@@ -40,10 +40,10 @@ public class TodoController {
         return TodoUpdateResponse.of(updatedTodo);
     }
 
-    @PutMapping("/status/{id}")
-    public TodoUpdateResponse updateTodoStatus(@PathVariable Long id,
-                                               @RequestBody @Valid TodoStatusUpdateRequest todoStatusUpdateRequest) {
-        Todo updateTodoStatus = todoService.updateTodoStatus(id, todoStatusUpdateRequest.getStatus());
-        return TodoUpdateResponse.of(updateTodoStatus);
+    @PutMapping("/{id}/status")
+    public TodoResponse updateTodoStatus(@PathVariable Long id,
+                                         @RequestBody @Valid TodoStatusUpdateRequest todoStatusUpdateRequest) {
+        Todo todo = todoService.updateTodoStatus(id, todoStatusUpdateRequest.getStatus());
+        return TodoResponse.of(todo);
     }
 }

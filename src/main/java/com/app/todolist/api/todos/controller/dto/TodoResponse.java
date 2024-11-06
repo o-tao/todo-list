@@ -30,7 +30,7 @@ public class TodoResponse {
                 .id(todo.getId())
                 .title(todo.getTitle())
                 .content(todo.getContent())
-                .status(TodoStatus.TODO)
+                .status(todo.getStatus())
                 .createdAt(todo.getCreatedAt())
                 .updatedAt(todo.getUpdatedAt())
                 .member(new TodoMemberInfo(todo.getMember().getId(), todo.getMember().getEmail()))
