@@ -8,6 +8,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.Objects;
 
@@ -41,5 +42,19 @@ public class GlobalExceptionHandler {
         TodoExceptionResponse errorResult = new TodoExceptionResponse(
                 exception.getExceptionHttpStatus(), exception.getExceptionMessage());
         return new ResponseEntity<>(errorResult, exception.getExceptionHttpStatus());
+    }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<TodoExceptionResponse> responseNoResourceFoundException() {
+        HttpStatus httpStatus = HttpStatus.NOT_FOUND;
+        TodoExceptionResponse errorResult = new TodoExceptionResponse(httpStatus, "잘못된 앤드 포인트 입니다.");
+        return new ResponseEntity<>(errorResult, httpStatus);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<TodoExceptionResponse> responseException() {
+        HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+        TodoExceptionResponse errorResponse = new TodoExceptionResponse(httpStatus, "서버 에러 입니다.");
+        return new ResponseEntity<>(errorResponse, httpStatus);
     }
 }
