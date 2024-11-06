@@ -31,4 +31,9 @@ public class Todo extends BaseEntity {
         todo.member = member;
         return todo;
     }
+
+    public void update(String title, String content) {
+        this.title = title;
+        this.content = content;
+    }
 }
