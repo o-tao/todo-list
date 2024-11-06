@@ -28,9 +28,9 @@ public class TodoController {
     }
 
     @GetMapping("/{id}")
-    public TodoDetailsResponse todoDetails(@PathVariable Long id) {
+    public TodoResponse todoDetails(@PathVariable Long id) {
         Todo todo = todoService.findTodoById(id);
-        return TodoDetailsResponse.of(todo);
+        return TodoResponse.of(todo);
     }
 
     @PutMapping("/{id}")
