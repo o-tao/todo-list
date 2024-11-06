@@ -36,9 +36,9 @@ public class TodoService {
 
     @Transactional
     public Todo updateTodo(Long id, TodoUpdateInfo todoUpdateInfo) {
-        Todo existingTodo = findTodoById(id);
-        existingTodo.update(todoUpdateInfo.getTitle(), todoUpdateInfo.getContent());
-        return existingTodo;
+        Todo todo = findTodoById(id);
+        todo.update(todoUpdateInfo.getTitle(), todoUpdateInfo.getContent());
+        return todo;
     }
 
     public PaginationResponse<TodoSearchResponse> searchTodosByOptions(TodosWithOptions todosWithOptions) {

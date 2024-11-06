@@ -28,9 +28,9 @@ public class TodoController {
     }
 
     @PutMapping("/{id}")
-    public TodoUpdateResponse updateTodo(@PathVariable Long id,
-                                         @RequestBody @Valid TodoUpdateRequest todoUpdateRequest) {
-        Todo updatedTodo = todoService.updateTodo(id, todoUpdateRequest.toUpdate());
-        return TodoUpdateResponse.of(updatedTodo);
+    public TodoResponse updateTodo(@PathVariable Long id,
+                                   @RequestBody @Valid TodoUpdateRequest todoUpdateRequest) {
+        Todo todo = todoService.updateTodo(id, todoUpdateRequest.toUpdate());
+        return TodoResponse.of(todo);
     }
 }
