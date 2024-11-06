@@ -106,6 +106,44 @@ public class GlobalExceptionHandlerTest {
         assertThat(response.getBody().getCode()).isEqualTo(exceptionStatus.value());
         assertThat(response.getBody().getMessage()).isEqualTo(exceptionMessage);
     }
+
+    @Test
+    @DisplayName("잘못된 엔드 포인트 요청 시 GlobalExceptionHandler가 NoResourceFoundException을 처리한다.")
+    public void responseNoResourceFoundExceptionTest() {
+        // given
+        GlobalExceptionHandler globalExceptionHandler = new GlobalExceptionHandler();
+
+        HttpStatus exceptionStatus = HttpStatus.NOT_FOUND;
+        String exceptionMessage = "잘못된 앤드 포인트 입니다.";
+
+        // when
+        ResponseEntity<TodoExceptionResponse> response = globalExceptionHandler.responseNoResourceFoundException();
+
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(exceptionStatus);
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody().getCode()).isEqualTo(exceptionStatus.value());
+        assertThat(response.getBody().getMessage()).isEqualTo(exceptionMessage);
+    }
+
+    @Test
+    @DisplayName("일반 Exception 발생 시 GlobalExceptionHandler가 INTERNAL_SERVER_ERROR를 처리한다.")
+    public void responseExceptionTest() {
+        // given
+        GlobalExceptionHandler globalExceptionHandler = new GlobalExceptionHandler();
+
+        HttpStatus exceptionStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+        String exceptionMessage = "서버 에러 입니다.";
+
+        // when
+        ResponseEntity<TodoExceptionResponse> response = globalExceptionHandler.responseException();
+
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(exceptionStatus);
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody().getCode()).isEqualTo(exceptionStatus.value());
+        assertThat(response.getBody().getMessage()).isEqualTo(exceptionMessage);
+    }
 }
 
 class ExampleRequest {
