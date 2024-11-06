@@ -267,4 +267,34 @@ class TodoServiceTest {
         assertThat(exception.getExceptionMessage()).isEqualTo("TODO가 존재하지 않습니다.");
     }
 
+    @Test
+    @DisplayName("생성된 todo에 대해 단일 건으로 상세조회를 할 수 있다.")
+    public void findTodoByDetailsTest() {
+        // given
+        Member savedMember = createMember();
+        Todo existingTodo = createTodo(savedMember, "todo-list", "hello");
+
+        // when
+        Todo todoDetails = todoService.findTodoById(existingTodo.getId());
+
+        // then
+        assertThat(existingTodo.getTitle()).isEqualTo(todoDetails.getTitle());
+        assertThat(existingTodo.getContent()).isEqualTo(todoDetails.getContent());
+        assertThat(existingTodo.getStatus()).isEqualTo(todoDetails.getStatus());
+        assertThat(existingTodo.getCreatedAt()).isEqualTo(todoDetails.getCreatedAt());
+        assertThat(existingTodo.getUpdatedAt()).isEqualTo(todoDetails.getUpdatedAt());
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 todo 조회 시 예외가 발생한다.")
+    public void findTodoByDetailsValidateTest() {
+        // when
+        TodoApplicationException exception = assertThrows(TodoApplicationException.class,
+                () -> todoService.findTodoById(-1L));
+
+        // then
+        assertThat(exception).isInstanceOf(TodoApplicationException.class);
+        assertThat(exception.getExceptionMessage()).isEqualTo("TODO가 존재하지 않습니다.");
+    }
+
 }

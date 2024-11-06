@@ -27,6 +27,12 @@ public class TodoController {
         return todoService.searchTodosByOptions(searchRequest.toOption());
     }
 
+    @GetMapping("/{id}")
+    public TodoResponse todoDetails(@PathVariable Long id) {
+        Todo todo = todoService.findTodoById(id);
+        return TodoResponse.of(todo);
+    }
+
     @PutMapping("/{id}")
     public TodoResponse updateTodo(@PathVariable Long id,
                                    @RequestBody @Valid TodoUpdateRequest todoUpdateRequest) {

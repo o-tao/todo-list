@@ -53,7 +53,7 @@ public class TodoService {
         );
     }
 
-    private Todo findTodoById(Long id) {
+    public Todo findTodoById(Long id) {
         return todoRepository.findById(id).orElseThrow(()
                 -> new TodoApplicationException(ErrorCode.TODO_NOT_FOUND)
         );
