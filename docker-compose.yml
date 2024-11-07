@@ -15,6 +15,21 @@ services:
       MYSQL_COLLATION: utf8mb4_unicode_ci # 대조 문자
       TZ: Asia/Seoul # 타임존 설정
 
+  redis:
+    image: redis:7.0
+    container_name: redis
+    restart: always
+    ports:
+      - "6379:6379" # Redis 기본 포트 [로컬:도커]
+    volumes:
+      - ./db/redis/data:/data # Redis 데이터 저장 경로 [로컬:도커]
+    environment:
+      TZ: Asia/Seoul
+
+
+
+#============================================================================================#
+# MySQL 추가 명령어
 
 # 환경변수 추가 명령어
 # MYSQL_DATABASE: ex # 데이터베이스 생성 이름
@@ -30,3 +45,10 @@ services:
 # restart 추가 명령어
 # no: 수동으로 재시작 설정
 # on-failure: 오류 발생 시 재시작
+#============================================================================================#
+# Redis 추가 명령어
+
+# command: redis-server /usr/local/etc/redis/redis.conf 커스텀 설정 파일을 사용하여 Redis 서버 시작
+
+# volumes:
+#   - ./db/redis/redis.conf:/usr/local/etc/redis/redis.conf 로컬의 redis.conf 파일을 컨테이너 내의 설정 경로로 매핑
