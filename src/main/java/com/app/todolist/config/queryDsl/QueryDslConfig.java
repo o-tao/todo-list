@@ -1,4 +1,4 @@
-package com.app.todolist.config;
+package com.app.todolist.config.queryDsl;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;

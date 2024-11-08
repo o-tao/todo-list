@@ -1,6 +1,6 @@
 package com.app.todolist.api.todos.service;
 
-import com.app.todolist.api.members.MemberService;
+import com.app.todolist.api.members.service.MemberService;
 import com.app.todolist.api.todos.controller.dto.TodoSearchResponse;
 import com.app.todolist.api.todos.service.dto.TodoUpdateInfo;
 import com.app.todolist.api.todos.service.dto.TodosWithOptions;
