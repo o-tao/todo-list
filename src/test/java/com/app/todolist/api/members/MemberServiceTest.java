@@ -1,5 +1,6 @@
 package com.app.todolist.api.members;
 
+import com.app.todolist.api.members.service.MemberService;
 import com.app.todolist.domain.members.Member;
 import com.app.todolist.domain.members.repository.MemberRepository;
 import com.app.todolist.web.exception.TodoApplicationException;

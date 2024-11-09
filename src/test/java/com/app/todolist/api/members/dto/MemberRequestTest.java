@@ -1,5 +1,6 @@
 package com.app.todolist.api.members.dto;
 
+import com.app.todolist.api.members.controller.dto.request.MemberRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;

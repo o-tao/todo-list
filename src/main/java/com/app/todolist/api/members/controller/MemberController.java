@@ -1,7 +1,8 @@
-package com.app.todolist.api.members;
+package com.app.todolist.api.members.controller;
 
-import com.app.todolist.api.members.dto.MemberRequest;
-import com.app.todolist.api.members.dto.MemberResponse;
+import com.app.todolist.api.members.controller.dto.request.MemberRequest;
+import com.app.todolist.api.members.controller.dto.response.MemberResponse;
+import com.app.todolist.api.members.service.MemberService;
 import com.app.todolist.domain.members.Member;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

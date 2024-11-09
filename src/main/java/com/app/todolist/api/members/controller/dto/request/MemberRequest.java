@@ -1,4 +1,4 @@
-package com.app.todolist.api.members.dto;
+package com.app.todolist.api.members.controller.dto.request;
 
 import com.app.todolist.domain.members.Member;
 import jakarta.validation.constraints.NotBlank;
