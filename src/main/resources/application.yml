@@ -1,7 +1,15 @@
 server:
   port: 80
+  servlet:
+    session:
+      timeout: ${SESSION_TIMEOUT}
 
 spring:
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: ${MYSQL_URL}
