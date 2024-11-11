@@ -65,6 +65,36 @@ class MemberServiceTest {
     }
 
     @Test
+    @DisplayName("회원 생성 시 비밀번호가 암호화되어 생성된다.")
+    void testPasswordEncryption() {
+        // given
+        String password = "1234";
+
+        // when
+        String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
+
+        // then
+        assertThat(hashedPassword).isNotNull();
+        assertThat(password).isNotEqualTo(hashedPassword);
+        assertThat(BCrypt.checkpw(password, hashedPassword)).isTrue();
+    }
+
+    @Test
+    @DisplayName("회원 생성 시 비밀번호가 암호화되어 저장된다.")
+    void testCreateMember_passwordShouldBeEncrypted() {
+        // given
+        MemberCreateInfo memberCreateInfo = memberCreateInfo("tao@exemple.com", "1234");
+
+        // when
+        Member createdMember = memberService.createMember(memberCreateInfo);
+
+        // then
+        assertThat(createdMember).isNotNull();
+        assertThat(memberCreateInfo.getPassword()).isNotEqualTo(createdMember.getPassword());
+        assertThat(BCrypt.checkpw(memberCreateInfo.getPassword(), createdMember.getPassword())).isTrue();
+    }
+
+    @Test
     @DisplayName("로그인 아이디가 존재할 경우 예외가 발생한다.")
     public void validateMemberTest() {
         // given
