@@ -1,6 +1,6 @@
 package com.app.todolist.api.members.controller.dto.request;
 
-import com.app.todolist.domain.members.Member;
+import com.app.todolist.api.members.service.dto.MemberCreateInfo;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.NoArgsConstructor;
@@ -17,7 +17,7 @@ public class MemberRequest {
     @NotBlank(message = "비밀번호를 입력하세요.")
     private String password;
 
-    public Member toEntity() {
-        return Member.create(email, password);
+    public MemberCreateInfo toCreate() {
+        return new MemberCreateInfo(email, password);
     }
 }

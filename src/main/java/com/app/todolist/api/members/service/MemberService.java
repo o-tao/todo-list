@@ -1,5 +1,6 @@
 package com.app.todolist.api.members.service;
 
+import com.app.todolist.api.members.service.dto.MemberCreateInfo;
 import com.app.todolist.api.members.service.dto.MemberLoginInfo;
 import com.app.todolist.config.redis.dto.MemberSession;
 import com.app.todolist.domain.members.Member;
@@ -9,6 +10,7 @@ import com.app.todolist.web.exception.TodoApplicationException;
 import jakarta.servlet.http.Cookie;
 import lombok.RequiredArgsConstructor;
 import org.apache.catalina.util.StandardSessionIdGenerator;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,15 +27,19 @@ public class MemberService {
     private final RedisTemplate<String, MemberSession> redisTemplate;
 
     @Transactional
-    public Member createMember(Member member) {
-        validateMember(member.getEmail());
-        return memberRepository.save(member);
+    public Member createMember(MemberCreateInfo memberCreateInfo) {
+        validateMember(memberCreateInfo.getEmail());
+        String hashedPassword = BCrypt.hashpw(memberCreateInfo.getPassword(), BCrypt.gensalt());
+        return memberRepository.save(Member.create(memberCreateInfo.getEmail(), hashedPassword));
     }
 
     public Cookie login(MemberLoginInfo memberLoginInfo) {
-        Member member = memberRepository.findByEmailAndPassword(
-                memberLoginInfo.getEmail(), memberLoginInfo.getPassword()).orElseThrow(()
+        Member member = memberRepository.findByEmail(memberLoginInfo.getEmail()).orElseThrow(()
                 -> new TodoApplicationException(ErrorCode.AUTHENTICATION_FAILED));
+
+        if (!BCrypt.checkpw(memberLoginInfo.getPassword(), member.getPassword())) {
+            throw new TodoApplicationException(ErrorCode.AUTHENTICATION_FAILED);
+        }
 
         String sessionId = new StandardSessionIdGenerator().generateSessionId();
         String sessionKey = "TODO_SESSION:" + sessionId;
