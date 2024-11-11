@@ -1,6 +1,7 @@
 package com.app.todolist.api.members;
 
 import com.app.todolist.api.members.service.MemberService;
+import com.app.todolist.api.members.service.dto.MemberCreateInfo;
 import com.app.todolist.api.members.service.dto.MemberLoginInfo;
 import com.app.todolist.config.redis.dto.MemberSession;
 import com.app.todolist.domain.members.Member;
@@ -11,6 +12,7 @@ import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -33,36 +35,41 @@ class MemberServiceTest {
         memberRepository.deleteAllInBatch();
     }
 
+    private MemberCreateInfo memberCreateInfo(String email, String password) {
+        return new MemberCreateInfo(email, password);
+    }
+
     private MemberLoginInfo loginMember(String email, String password) {
         return new MemberLoginInfo(email, password);
     }
 
     private Member createTestMember(String email, String password) {
-        Member member = Member.create(email, password);
+        String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
+        Member member = Member.create(email, hashedPassword);
         return memberRepository.save(member);
     }
 
     @Test
     @DisplayName("로그인 아이디와 비밀번호로 회원을 생성한다.")
-    public void createMemberMemberTest() {
+    public void createMemberTest() {
         // given
-        Member member1 = Member.create("tao@exemple.com", "1234");
-        memberService.createMember(member1);
+        MemberCreateInfo member = memberCreateInfo("tao@exemple.com", "1234");
+        memberService.createMember(member);
 
         // when
         Member findMember = memberRepository.findAll().stream().findFirst().orElseThrow();
 
         // then
-        assertThat(findMember.getEmail()).isEqualTo(member1.getEmail());
-        assertThat(findMember.getPassword()).isEqualTo(member1.getPassword());
+        assertThat(findMember.getEmail()).isEqualTo(member.getEmail());
+        assertThat(BCrypt.checkpw(member.getPassword(), findMember.getPassword())).isTrue();
     }
 
     @Test
     @DisplayName("로그인 아이디가 존재할 경우 예외가 발생한다.")
     public void validateMemberTest() {
         // given
-        Member member1 = Member.create("tao@exemple.com", "1234");
-        Member member2 = Member.create("tao@exemple.com", "1234");
+        MemberCreateInfo member1 = memberCreateInfo("tao@exemple.com", "1234");
+        MemberCreateInfo member2 = memberCreateInfo("tao@exemple.com", "1234");
         memberService.createMember(member1);
 
         // when
