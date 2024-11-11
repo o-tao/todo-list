@@ -1,10 +1,12 @@
 package com.app.todolist.config.redis.dto;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 public class MemberSession {
-    private final Long id;
+    private Long id;
 
     public MemberSession(Long id) {
         this.id = id;
