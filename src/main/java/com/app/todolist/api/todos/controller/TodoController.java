@@ -41,10 +41,12 @@ public class TodoController {
         return TodoResponse.of(todo);
     }
 
+    @CheckAuth
     @PutMapping("/{id}")
     public TodoResponse updateTodo(@PathVariable Long id,
-                                   @RequestBody @Valid TodoUpdateRequest todoUpdateRequest) {
-        Todo todo = todoService.updateTodo(id, todoUpdateRequest.toUpdate());
+                                   @RequestBody @Valid TodoUpdateRequest todoUpdateRequest,
+                                   @LoginMember MemberSession memberSession) {
+        Todo todo = todoService.updateTodo(id, todoUpdateRequest.toUpdate(), memberSession);
         return TodoResponse.of(todo);
     }
 

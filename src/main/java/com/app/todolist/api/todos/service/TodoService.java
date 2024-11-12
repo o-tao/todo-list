@@ -4,6 +4,7 @@ import com.app.todolist.api.members.service.MemberService;
 import com.app.todolist.api.todos.controller.dto.TodoSearchResponse;
 import com.app.todolist.api.todos.service.dto.TodoUpdateInfo;
 import com.app.todolist.api.todos.service.dto.TodosWithOptions;
+import com.app.todolist.config.redis.dto.MemberSession;
 import com.app.todolist.domain.members.Member;
 import com.app.todolist.domain.todos.Todo;
 import com.app.todolist.domain.todos.TodoStatus;
@@ -36,8 +37,9 @@ public class TodoService {
     }
 
     @Transactional
-    public Todo updateTodo(Long id, TodoUpdateInfo todoUpdateInfo) {
-        Todo todo = findTodoById(id);
+    public Todo updateTodo(Long todoId, TodoUpdateInfo todoUpdateInfo, MemberSession memberSession) {
+        Todo todo = findTodoById(todoId);
+        validateTodoOwnership(todo, memberSession.getMemberId());
         todo.update(todoUpdateInfo.getTitle(), todoUpdateInfo.getContent());
         return todo;
     }
@@ -65,5 +67,11 @@ public class TodoService {
         return todoRepository.findById(id).orElseThrow(()
                 -> new TodoApplicationException(ErrorCode.TODO_NOT_FOUND)
         );
+    }
+
+    private void validateTodoOwnership(Todo todo, Long memberId) {
+        if (!todo.getMember().getId().equals(memberId)) {
+            throw new TodoApplicationException(ErrorCode.PERMISSION_DENIED);
+        }
     }
 }
