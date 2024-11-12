@@ -64,7 +64,13 @@ public class TodoService {
         );
     }
 
-    public Todo findTodoById(Long id) {
+    public Todo getTodoDetails(Long id, Long memberId) {
+        Todo todo = findTodoById(id);
+        validateTodoOwnership(todo, memberId);
+        return todo;
+    }
+
+    private Todo findTodoById(Long id) {
         return todoRepository.findById(id).orElseThrow(()
                 -> new TodoApplicationException(ErrorCode.TODO_NOT_FOUND)
         );

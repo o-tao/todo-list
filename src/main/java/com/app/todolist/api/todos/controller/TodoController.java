@@ -30,14 +30,15 @@ public class TodoController {
     @CheckAuth
     @GetMapping
     public PaginationResponse<TodoSearchResponse> searchTodosByOptions(@Valid TodoSearchRequest searchRequest,
-                                                                       @LoginMember MemberSession memberSession
-    ) {
+                                                                       @LoginMember MemberSession memberSession) {
         return todoService.searchTodosByOptions(searchRequest.toOption(memberSession.getMemberId()));
     }
 
+    @CheckAuth
     @GetMapping("/{id}")
-    public TodoResponse todoDetails(@PathVariable Long id) {
-        Todo todo = todoService.findTodoById(id);
+    public TodoResponse todoDetails(@PathVariable Long id,
+                                    @LoginMember MemberSession memberSession) {
+        Todo todo = todoService.getTodoDetails(id, memberSession.getMemberId());
         return TodoResponse.of(todo);
     }
 
