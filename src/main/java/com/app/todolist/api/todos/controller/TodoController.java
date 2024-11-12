@@ -50,10 +50,12 @@ public class TodoController {
         return TodoResponse.of(todo);
     }
 
+    @CheckAuth
     @PutMapping("/{id}/status")
     public TodoResponse updateTodoStatus(@PathVariable Long id,
-                                         @RequestBody @Valid TodoStatusUpdateRequest todoStatusUpdateRequest) {
-        Todo todo = todoService.updateTodoStatus(id, todoStatusUpdateRequest.getStatus());
+                                         @RequestBody @Valid TodoStatusUpdateRequest todoStatusUpdateRequest,
+                                         @LoginMember MemberSession memberSession) {
+        Todo todo = todoService.updateTodoStatus(id, todoStatusUpdateRequest.getStatus(), memberSession);
         return TodoResponse.of(todo);
     }
 }

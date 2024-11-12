@@ -45,8 +45,9 @@ public class TodoService {
     }
 
     @Transactional
-    public Todo updateTodoStatus(Long id, TodoStatus todoStatus) {
+    public Todo updateTodoStatus(Long id, TodoStatus todoStatus, MemberSession memberSession) {
         Todo todo = findTodoById(id);
+        validateTodoOwnership(todo, memberSession.getMemberId());
         todo.updateStatus(todoStatus);
         return todo;
     }
