@@ -4,7 +4,6 @@ import com.app.todolist.api.members.service.MemberService;
 import com.app.todolist.api.todos.controller.dto.TodoSearchResponse;
 import com.app.todolist.api.todos.service.dto.TodoUpdateInfo;
 import com.app.todolist.api.todos.service.dto.TodosWithOptions;
-import com.app.todolist.config.redis.dto.MemberSession;
 import com.app.todolist.domain.members.Member;
 import com.app.todolist.domain.todos.Todo;
 import com.app.todolist.domain.todos.TodoStatus;
@@ -31,23 +30,23 @@ public class TodoService {
 
 
     @Transactional
-    public Todo createTodo(Long memberId, String title, String content) {
+    public Todo createTodo(String title, String content, Long memberId) {
         Member member = memberService.findMemberById(memberId);
         return todoRepository.save(Todo.create(member, title, content));
     }
 
     @Transactional
-    public Todo updateTodo(Long todoId, TodoUpdateInfo todoUpdateInfo, MemberSession memberSession) {
+    public Todo updateTodo(Long todoId, TodoUpdateInfo todoUpdateInfo, Long memberId) {
         Todo todo = findTodoById(todoId);
-        validateTodoOwnership(todo, memberSession.getMemberId());
+        validateTodoOwnership(todo, memberId);
         todo.update(todoUpdateInfo.getTitle(), todoUpdateInfo.getContent());
         return todo;
     }
 
     @Transactional
-    public Todo updateTodoStatus(Long id, TodoStatus todoStatus, MemberSession memberSession) {
-        Todo todo = findTodoById(id);
-        validateTodoOwnership(todo, memberSession.getMemberId());
+    public Todo updateTodoStatus(Long todoId, TodoStatus todoStatus, Long memberId) {
+        Todo todo = findTodoById(todoId);
+        validateTodoOwnership(todo, memberId);
         todo.updateStatus(todoStatus);
         return todo;
     }
@@ -64,8 +63,8 @@ public class TodoService {
         );
     }
 
-    public Todo getTodoDetails(Long id, Long memberId) {
-        Todo todo = findTodoById(id);
+    public Todo getTodoDetails(Long todoId, Long memberId) {
+        Todo todo = findTodoById(todoId);
         validateTodoOwnership(todo, memberId);
         return todo;
     }

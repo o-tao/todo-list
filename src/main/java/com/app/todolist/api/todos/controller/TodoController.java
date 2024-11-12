@@ -23,7 +23,7 @@ public class TodoController {
     public TodoResponse createTodo(@RequestBody @Valid TodoRequest todoRequest,
                                    @LoginMember MemberSession memberSession) {
         Todo todo = todoService.createTodo(
-                memberSession.getMemberId(), todoRequest.getTitle(), todoRequest.getContent());
+                todoRequest.getTitle(), todoRequest.getContent(), memberSession.getMemberId());
         return TodoResponse.of(todo);
     }
 
@@ -35,28 +35,28 @@ public class TodoController {
     }
 
     @CheckAuth
-    @GetMapping("/{id}")
-    public TodoResponse todoDetails(@PathVariable Long id,
+    @GetMapping("/{todoId}")
+    public TodoResponse todoDetails(@PathVariable Long todoId,
                                     @LoginMember MemberSession memberSession) {
-        Todo todo = todoService.getTodoDetails(id, memberSession.getMemberId());
+        Todo todo = todoService.getTodoDetails(todoId, memberSession.getMemberId());
         return TodoResponse.of(todo);
     }
 
     @CheckAuth
-    @PutMapping("/{id}")
-    public TodoResponse updateTodo(@PathVariable Long id,
+    @PutMapping("/{todoId}")
+    public TodoResponse updateTodo(@PathVariable Long todoId,
                                    @RequestBody @Valid TodoUpdateRequest todoUpdateRequest,
                                    @LoginMember MemberSession memberSession) {
-        Todo todo = todoService.updateTodo(id, todoUpdateRequest.toUpdate(), memberSession);
+        Todo todo = todoService.updateTodo(todoId, todoUpdateRequest.toUpdate(), memberSession.getMemberId());
         return TodoResponse.of(todo);
     }
 
     @CheckAuth
-    @PutMapping("/{id}/status")
-    public TodoResponse updateTodoStatus(@PathVariable Long id,
+    @PutMapping("/{todoId}/status")
+    public TodoResponse updateTodoStatus(@PathVariable Long todoId,
                                          @RequestBody @Valid TodoStatusUpdateRequest todoStatusUpdateRequest,
                                          @LoginMember MemberSession memberSession) {
-        Todo todo = todoService.updateTodoStatus(id, todoStatusUpdateRequest.getStatus(), memberSession);
+        Todo todo = todoService.updateTodoStatus(todoId, todoStatusUpdateRequest.getStatus(), memberSession.getMemberId());
         return TodoResponse.of(todo);
     }
 }
