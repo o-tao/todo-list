@@ -2,6 +2,9 @@ package com.app.todolist.api.todos.controller;
 
 import com.app.todolist.api.todos.controller.dto.*;
 import com.app.todolist.api.todos.service.TodoService;
+import com.app.todolist.config.auth.checkAuth.CheckAuth;
+import com.app.todolist.config.auth.loginMember.LoginMember;
+import com.app.todolist.config.redis.dto.MemberSession;
 import com.app.todolist.domain.todos.Todo;
 import com.app.todolist.web.util.PaginationResponse;
 import jakarta.validation.Valid;
@@ -15,16 +18,21 @@ public class TodoController {
 
     private final TodoService todoService;
 
+    @CheckAuth
     @PostMapping
-    public TodoResponse createTodo(@RequestBody @Valid TodoRequest todoRequest) {
+    public TodoResponse createTodo(@RequestBody @Valid TodoRequest todoRequest,
+                                   @LoginMember MemberSession memberSession) {
         Todo todo = todoService.createTodo(
-                todoRequest.getMemberId(), todoRequest.getTitle(), todoRequest.getContent());
+                memberSession.getMemberId(), todoRequest.getTitle(), todoRequest.getContent());
         return TodoResponse.of(todo);
     }
 
+    @CheckAuth
     @GetMapping
-    public PaginationResponse<TodoSearchResponse> searchTodosByOptions(@Valid TodoSearchRequest searchRequest) {
-        return todoService.searchTodosByOptions(searchRequest.toOption());
+    public PaginationResponse<TodoSearchResponse> searchTodosByOptions(@Valid TodoSearchRequest searchRequest,
+                                                                       @LoginMember MemberSession memberSession
+    ) {
+        return todoService.searchTodosByOptions(searchRequest.toOption(memberSession.getMemberId()));
     }
 
     @GetMapping("/{id}")
