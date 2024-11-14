@@ -1,6 +1,7 @@
 package com.app.todolist.api.todos.service;
 
 import com.app.todolist.api.todos.controller.dto.TodoSearchResponse;
+import com.app.todolist.api.todos.service.dto.TodoCreateInfo;
 import com.app.todolist.api.todos.service.dto.TodoUpdateInfo;
 import com.app.todolist.api.todos.service.dto.TodosWithOptions;
 import com.app.todolist.config.redis.dto.MemberSession;
@@ -60,12 +61,11 @@ class TodoServiceTest {
     public void createTodoTest() {
         // given
         Member savedMember = createMember();
-        String title = "tao title";
-        String content = "tao content";
+        TodoCreateInfo todoCreateInfo = new TodoCreateInfo("tao title", "tao content");
         Long memberId = savedMember.getId();
 
         // when
-        Todo createTodo = todoService.createTodo(title, content, memberId);
+        Todo createTodo = todoService.createTodo(todoCreateInfo, memberId);
 
         // then
         Todo findTodo = todoRepository.findAll().stream().findFirst().orElseThrow();
@@ -80,12 +80,11 @@ class TodoServiceTest {
     @DisplayName("존재하지 않는 회원이 Todo생성 시 예외가 발생한다.")
     public void createTodoByValidateMemberTest() {
         // given
-        String title = "tao title";
-        String content = "tao content";
+        TodoCreateInfo todoCreateInfo = new TodoCreateInfo("tao title", "tao content");
 
         // when
         TodoApplicationException exception = assertThrows(TodoApplicationException.class,
-                () -> todoService.createTodo(title, content, -1L));
+                () -> todoService.createTodo(todoCreateInfo, -1L));
 
         // then
         assertThat(exception).isInstanceOf(TodoApplicationException.class);

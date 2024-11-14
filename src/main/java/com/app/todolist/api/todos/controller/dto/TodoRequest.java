@@ -1,5 +1,6 @@
 package com.app.todolist.api.todos.controller.dto;
 
+import com.app.todolist.api.todos.service.dto.TodoCreateInfo;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -19,4 +20,8 @@ public class TodoRequest {
     @Size(max = 250, message = "내용은 250자리 이하 입력이 가능합니다.")
     @NotNull(message = "내용을 입력하세요.")
     private String content;
+
+    public TodoCreateInfo toCreate() {
+        return new TodoCreateInfo(title, content);
+    }
 }

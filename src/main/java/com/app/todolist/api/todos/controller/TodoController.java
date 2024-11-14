@@ -23,7 +23,7 @@ public class TodoController {
     public TodoResponse createTodo(@RequestBody @Valid TodoRequest todoRequest,
                                    @LoginMember MemberSession memberSession) {
         Todo todo = todoService.createTodo(
-                todoRequest.getTitle(), todoRequest.getContent(), memberSession.getMemberId());
+                todoRequest.toCreate(), memberSession.getMemberId());
         return TodoResponse.of(todo);
     }
 

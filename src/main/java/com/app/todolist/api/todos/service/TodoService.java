@@ -2,6 +2,7 @@ package com.app.todolist.api.todos.service;
 
 import com.app.todolist.api.members.service.MemberService;
 import com.app.todolist.api.todos.controller.dto.TodoSearchResponse;
+import com.app.todolist.api.todos.service.dto.TodoCreateInfo;
 import com.app.todolist.api.todos.service.dto.TodoUpdateInfo;
 import com.app.todolist.api.todos.service.dto.TodosWithOptions;
 import com.app.todolist.domain.members.Member;
@@ -30,9 +31,9 @@ public class TodoService {
 
 
     @Transactional
-    public Todo createTodo(String title, String content, Long memberId) {
+    public Todo createTodo(TodoCreateInfo todoCreateInfo, Long memberId) {
         Member member = memberService.findMemberById(memberId);
-        return todoRepository.save(Todo.create(member, title, content));
+        return todoRepository.save(Todo.create(member, todoCreateInfo.getTitle(), todoCreateInfo.getContent()));
     }
 
     @Transactional
