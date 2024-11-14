@@ -1,7 +1,7 @@
 package com.app.todolist.config.redis;
 
 import com.app.todolist.config.redis.dto.MemberSession;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -14,18 +14,16 @@ import org.springframework.session.data.redis.config.annotation.web.http.EnableR
 
 @Configuration
 @EnableRedisHttpSession
+@RequiredArgsConstructor
 public class RedisConfig {
 
-    @Value("${spring.data.redis.host}")
-    private String host;
-
-    @Value("${spring.data.redis.port}")
-    private int port;
+    private final RedisProperties redisProperties;
 
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
         return new LettuceConnectionFactory(
-                new RedisStandaloneConfiguration(host, port)
+                new RedisStandaloneConfiguration(
+                        redisProperties.getHost(), redisProperties.getPort())
         );
     }
 

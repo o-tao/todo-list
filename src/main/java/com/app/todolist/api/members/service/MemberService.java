@@ -2,6 +2,7 @@ package com.app.todolist.api.members.service;
 
 import com.app.todolist.api.members.service.dto.MemberCreateInfo;
 import com.app.todolist.api.members.service.dto.MemberLoginInfo;
+import com.app.todolist.config.auth.AuthProperties;
 import com.app.todolist.config.redis.dto.MemberSession;
 import com.app.todolist.domain.members.Member;
 import com.app.todolist.domain.members.repository.MemberRepository;
@@ -21,6 +22,8 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class MemberService {
+
+    private final AuthProperties authProperties;
 
     private final MemberRepository memberRepository;
 
@@ -42,10 +45,10 @@ public class MemberService {
         }
 
         String sessionId = new StandardSessionIdGenerator().generateSessionId();
-        String sessionKey = "TODO_SESSION:" + sessionId;
+        String sessionKey = authProperties.getSessionPrefix() + sessionId;
         redisTemplate.opsForValue().set(sessionKey, new MemberSession(member.getId()), 30L, TimeUnit.MINUTES);
 
-        Cookie cookie = new Cookie("SESSION", sessionId);
+        Cookie cookie = new Cookie(authProperties.getCookieName(), sessionId);
         cookie.setMaxAge(1800);
         cookie.setPath("/");
         cookie.setHttpOnly(true);
@@ -56,10 +59,10 @@ public class MemberService {
     }
 
     public Cookie logout(String sessionId) {
-        String sessionKey = "TODO_SESSION:" + sessionId;
+        String sessionKey = authProperties.getSessionPrefix() + sessionId;
         redisTemplate.delete(sessionKey);
 
-        Cookie cookie = new Cookie("SESSION", null);
+        Cookie cookie = new Cookie(authProperties.getCookieName(), null);
         cookie.setMaxAge(0);
         cookie.setPath("/");
         return cookie;

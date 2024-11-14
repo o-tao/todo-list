@@ -1,5 +1,6 @@
 package com.app.todolist.config.auth.loginMember;
 
+import com.app.todolist.config.auth.AuthProperties;
 import com.app.todolist.config.redis.dto.MemberSession;
 import com.app.todolist.web.util.CookieUtil;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,6 +17,8 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 @RequiredArgsConstructor
 public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolver {
 
+    private final AuthProperties authProperties;
+
     private final HttpServletRequest httpServletRequest;
     private final RedisTemplate<String, MemberSession> redisTemplate;
 
@@ -31,7 +34,7 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
                                          WebDataBinderFactory binderFactory) {
         String sessionId = CookieUtil.getSessionIdFromCookies(httpServletRequest);
         if (sessionId != null) {
-            return redisTemplate.opsForValue().get("TODO_SESSION:" + sessionId);
+            return redisTemplate.opsForValue().get(authProperties.getSessionPrefix() + sessionId);
         }
         return null;
     }

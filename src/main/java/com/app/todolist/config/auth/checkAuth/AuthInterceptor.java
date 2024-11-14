@@ -1,5 +1,6 @@
 package com.app.todolist.config.auth.checkAuth;
 
+import com.app.todolist.config.auth.AuthProperties;
 import com.app.todolist.config.redis.dto.MemberSession;
 import com.app.todolist.web.exception.ErrorCode;
 import com.app.todolist.web.exception.TodoApplicationException;
@@ -14,9 +15,9 @@ import org.springframework.web.servlet.HandlerInterceptor;
 @RequiredArgsConstructor
 public class AuthInterceptor implements HandlerInterceptor {
 
-    private final RedisTemplate<String, MemberSession> redisTemplate;
+    private final AuthProperties authProperties;
 
-    private static final String SESSION_KEY = "TODO_SESSION:";
+    private final RedisTemplate<String, MemberSession> redisTemplate;
 
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest,
@@ -27,7 +28,7 @@ public class AuthInterceptor implements HandlerInterceptor {
             if (checkAuth != null) {
                 String sessionId = CookieUtil.getSessionIdFromCookies(httpServletRequest);
 
-                if (sessionId == null || redisTemplate.opsForValue().get(SESSION_KEY + sessionId) == null) {
+                if (sessionId == null || redisTemplate.opsForValue().get(authProperties.getSessionPrefix() + sessionId) == null) {
                     throw new TodoApplicationException(ErrorCode.LOGIN_FORBIDDEN);
                 }
             }
