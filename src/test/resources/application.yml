@@ -4,6 +4,10 @@ server:
     session:
       timeout: 1800
 
+auth:
+  session-prefix: "TODO_SESSION:"
+  cookie-name: "SESSION"
+
 spring:
   data:
     redis:

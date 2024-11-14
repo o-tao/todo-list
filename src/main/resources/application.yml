@@ -4,6 +4,10 @@ server:
     session:
       timeout: ${SESSION_TIMEOUT}
 
+auth:
+  session-prefix: ${SESSION_PREFIX}
+  cookie-name: ${COOKIE_NAME}
+
 spring:
   data:
     redis:
