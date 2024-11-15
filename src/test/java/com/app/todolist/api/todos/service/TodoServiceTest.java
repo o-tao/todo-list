@@ -180,7 +180,7 @@ class TodoServiceTest {
     }
 
     @Test
-    @DisplayName("로그인 된 사용자가 todo 수정 시 정상적으로 수정된다.")
+    @DisplayName("회원이 자신이 작성한 todo 수정 시 정상적으로 수정된다.")
     public void todoUpdateByValidMemberTest() {
         // given
         Member savedMember = createMember();
@@ -200,7 +200,7 @@ class TodoServiceTest {
     }
 
     @Test
-    @DisplayName("로그인 된 사용자가 다른 사용자의 todo 수정 시 예외가 발생한다.")
+    @DisplayName("회원이 다른 사용자의 todo를 수정 시 예외가 발생한다.")
     public void todoUpdateByInvalidMemberTest() {
         // given
         Member savedMember = createMember();
@@ -220,7 +220,7 @@ class TodoServiceTest {
     }
 
     @Test
-    @DisplayName("존재하는 todo의 title만 변경 될 경우 title만 수정된다.")
+    @DisplayName("Todo의 title을 수정한다.")
     public void todoTitleUpdateTest() {
         // given
         Member savedMember = createMember();
@@ -242,7 +242,7 @@ class TodoServiceTest {
     }
 
     @Test
-    @DisplayName("존재하는 todo의 content만 변경 될 경우 content만 수정된다.")
+    @DisplayName("Todo의 content를 수정한다.")
     public void todoContentUpdateTest() {
         // given
         Member savedMember = createMember();
@@ -263,7 +263,7 @@ class TodoServiceTest {
     }
 
     @Test
-    @DisplayName("존재하는 todo가 수정 될 경우 todo를 수정 한 시간이 updatedAt에 저장된다.")
+    @DisplayName("Todo의 수정 시간이 updatedAt에 저장된다.")
     public void todoUpdatedAtTest() {
         // given
         Member savedMember = createMember();
@@ -302,7 +302,7 @@ class TodoServiceTest {
     }
 
     @Test
-    @DisplayName("로그인 된 사용자가 생성된 본인의 todo에 대해 단일 건으로 상세조회를 할 수 있다.")
+    @DisplayName("회원이 생성한 본인의 todo에 대해 단일 건으로 상세조회를 할 수 있다.")
     public void findTodoByDetailsTest() {
         // given
         Member savedMember = createMember();
@@ -322,7 +322,7 @@ class TodoServiceTest {
     }
 
     @Test
-    @DisplayName("다른 사용자의 todo 상세 조회 시 예외가 발생한다.")
+    @DisplayName("회원이 다른 사용자의 todo 상세 조회 시 예외가 발생한다.")
     public void findTodoByDetailsByInvalidMemberTest() {
         // given
         Member savedMember = createMember();
@@ -353,7 +353,7 @@ class TodoServiceTest {
     }
 
     @Test
-    @DisplayName("로그인 된 사용자가 본인의 todo의 상태 변경 시 정상적으로 변경된다.")
+    @DisplayName("회원이 본인의 todo의 상태 변경 시 정상적으로 변경된다.")
     public void todoStatusUpdateTest() {
         // given
         Member savedMember = createMember();
@@ -370,7 +370,7 @@ class TodoServiceTest {
     }
 
     @Test
-    @DisplayName("로그인 된 사용자가 다른 사용자의 todo 상태 변경 시 예외가 발생한다.")
+    @DisplayName("회원이 다른 사용자의 todo 상태 변경 시 예외가 발생한다.")
     public void todoStatusUpdateByInvalidMemberTest() {
         // given
         Member savedMember = createMember();
@@ -388,7 +388,7 @@ class TodoServiceTest {
     }
 
     @Test
-    @DisplayName("존재하는 todo의 상태가 변경 될 경우 변경 된 시간이 updatedAt에 저장된다.")
+    @DisplayName("Todo의 상태 변경 된 시간이 updatedAt에 저장된다.")
     public void todoStatusUpdatedAtTest() {
         // given
         Member savedMember = createMember();
