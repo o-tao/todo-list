@@ -35,7 +35,7 @@ class MemberServiceTest {
         memberRepository.deleteAllInBatch();
     }
 
-    private MemberCreateInfo memberCreateInfo(String email, String password) {
+    private MemberCreateInfo createMemberInfo(String email, String password) {
         return new MemberCreateInfo(email, password);
     }
 
@@ -53,7 +53,7 @@ class MemberServiceTest {
     @DisplayName("로그인 아이디와 비밀번호로 회원을 생성한다.")
     public void createMemberTest() {
         // given
-        MemberCreateInfo member = memberCreateInfo("tao@exemple.com", "1234");
+        MemberCreateInfo member = createMemberInfo("tao@exemple.com", "1234");
         memberService.createMember(member);
 
         // when
@@ -66,9 +66,9 @@ class MemberServiceTest {
 
     @Test
     @DisplayName("회원 생성 시 비밀번호가 암호화되어 저장된다.")
-    void testCreateMember_passwordShouldBeEncrypted() {
+    public void createMemberPasswordShouldBeEncryptedTest() {
         // given
-        MemberCreateInfo memberCreateInfo = memberCreateInfo("tao@exemple.com", "1234");
+        MemberCreateInfo memberCreateInfo = createMemberInfo("tao@exemple.com", "1234");
 
         // when
         Member createdMember = memberService.createMember(memberCreateInfo);
@@ -83,8 +83,8 @@ class MemberServiceTest {
     @DisplayName("로그인 아이디가 존재할 경우 예외가 발생한다.")
     public void validateMemberTest() {
         // given
-        MemberCreateInfo member1 = memberCreateInfo("tao@exemple.com", "1234");
-        MemberCreateInfo member2 = memberCreateInfo("tao@exemple.com", "1234");
+        MemberCreateInfo member1 = createMemberInfo("tao@exemple.com", "1234");
+        MemberCreateInfo member2 = createMemberInfo("tao@exemple.com", "1234");
         memberService.createMember(member1);
 
         // when

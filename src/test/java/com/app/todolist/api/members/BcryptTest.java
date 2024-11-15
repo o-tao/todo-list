@@ -9,8 +9,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class BcryptTest {
 
     @Test
-    @DisplayName("회원 생성 시 비밀번호가 암호화되어 생성된다.")
-    void testPasswordEncryption() {
+    @DisplayName("비밀번호가 암호화되어 생성된다.")
+    public void passwordEncryptionTest() {
         // given
         String password = "1234";
 
