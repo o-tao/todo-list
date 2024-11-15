@@ -39,7 +39,7 @@ public class TodoService {
     @Transactional
     public Todo updateTodo(Long todoId, TodoUpdateInfo todoUpdateInfo, Long memberId) {
         Todo todo = findTodoById(todoId);
-        validateTodoOwnership(todo, memberId);
+        validateTodoOwnership(todo.getMember().getId(), memberId);
         todo.update(todoUpdateInfo.getTitle(), todoUpdateInfo.getContent());
         return todo;
     }
@@ -47,7 +47,7 @@ public class TodoService {
     @Transactional
     public Todo updateTodoStatus(Long todoId, TodoStatus todoStatus, Long memberId) {
         Todo todo = findTodoById(todoId);
-        validateTodoOwnership(todo, memberId);
+        validateTodoOwnership(todo.getMember().getId(), memberId);
         todo.updateStatus(todoStatus);
         return todo;
     }
@@ -66,7 +66,7 @@ public class TodoService {
 
     public Todo getTodoDetails(Long todoId, Long memberId) {
         Todo todo = findTodoById(todoId);
-        validateTodoOwnership(todo, memberId);
+        validateTodoOwnership(todo.getMember().getId(), memberId);
         return todo;
     }
 
@@ -76,8 +76,8 @@ public class TodoService {
         );
     }
 
-    private void validateTodoOwnership(Todo todo, Long memberId) {
-        if (!todo.getMember().getId().equals(memberId)) {
+    private void validateTodoOwnership(Long todoMemberId, Long memberId) {
+        if (!todoMemberId.equals(memberId)) {
             throw new TodoApplicationException(ErrorCode.PERMISSION_DENIED);
         }
     }
