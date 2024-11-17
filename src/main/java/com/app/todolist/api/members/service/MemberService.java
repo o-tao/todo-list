@@ -55,6 +55,16 @@ public class MemberService {
         return cookie;
     }
 
+    public Cookie logout(String sessionId) {
+        String sessionKey = "TODO_SESSION:" + sessionId;
+        redisTemplate.delete(sessionKey);
+
+        Cookie cookie = new Cookie("SESSION", null);
+        cookie.setMaxAge(0);
+        cookie.setPath("/");
+        return cookie;
+    }
+
     private void validateMember(String email) {
         if (memberRepository.existsByEmail(email)) {
             throw new TodoApplicationException(ErrorCode.DUPLICATED_MEMBER_ID);

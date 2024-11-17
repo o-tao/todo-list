@@ -147,4 +147,36 @@ class MemberServiceTest {
         assertThat(exception.getClass()).isEqualTo(TodoApplicationException.class);
         assertThat(exception.getExceptionMessage()).isEqualTo(ErrorCode.AUTHENTICATION_FAILED.getMessage());
     }
+
+    @Test
+    @DisplayName("로그인 된 사용자가 로그아웃 시 정상적으로 쿠키가 만료 처리된다.")
+    public void logoutByCookieExpirationTest() {
+        // given
+        String sessionId = "testSessionId";
+        redisTemplate.opsForValue().set("TODO_SESSION:" + sessionId, new MemberSession(1L));
+
+        // when
+        Cookie cookie = memberService.logout(sessionId);
+
+        // then
+        assertThat(cookie).isNotNull();
+        assertThat("SESSION").isEqualTo(cookie.getName());
+        assertThat(0).isEqualTo(cookie.getMaxAge());
+        assertThat(cookie.getValue()).isNull();
+    }
+
+    @Test
+    @DisplayName("로그인 된 사용자가 로그아웃 시 정상적으로 Redis 세션이 제거된다.")
+    public void logoutBySessionDeletionTest() {
+        // given
+        String sessionId = "testSessionId";
+        redisTemplate.opsForValue().set("TODO_SESSION:" + sessionId, new MemberSession(1L));
+
+        // when
+        memberService.logout(sessionId);
+
+        // then
+        MemberSession memberSession = redisTemplate.opsForValue().get("TODO_SESSION:" + sessionId);
+        assertThat(memberSession).isNull();
+    }
 }

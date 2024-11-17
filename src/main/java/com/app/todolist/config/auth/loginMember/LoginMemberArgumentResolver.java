@@ -1,7 +1,7 @@
 package com.app.todolist.config.auth.loginMember;
 
 import com.app.todolist.config.redis.dto.MemberSession;
-import jakarta.servlet.http.Cookie;
+import com.app.todolist.web.util.CookieUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;
@@ -11,8 +11,6 @@ import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
-
-import java.util.Arrays;
 
 @Component
 @RequiredArgsConstructor
@@ -31,20 +29,9 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
                                          ModelAndViewContainer mavContainer,
                                          NativeWebRequest webRequest,
                                          WebDataBinderFactory binderFactory) {
-        String sessionId = getSessionIdFromCookies(httpServletRequest);
+        String sessionId = CookieUtil.getSessionIdFromCookies(httpServletRequest);
         if (sessionId != null) {
             return redisTemplate.opsForValue().get("TODO_SESSION:" + sessionId);
-        }
-        return null;
-    }
-
-    private String getSessionIdFromCookies(HttpServletRequest httpServletRequest) {
-        if (httpServletRequest.getCookies() != null) {
-            return Arrays.stream(httpServletRequest.getCookies())
-                    .filter(cookie -> "SESSION".equals(cookie.getName()))
-                    .map(Cookie::getValue)
-                    .findFirst()
-                    .orElse(null);
         }
         return null;
     }
