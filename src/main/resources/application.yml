@@ -1,24 +1,15 @@
-server:
-  port: 80
-  servlet:
-    session:
-      timeout: ${SESSION_TIMEOUT}
-
-auth:
-  session-prefix: ${SESSION_PREFIX}
-  cookie-name: ${COOKIE_NAME}
-
 spring:
   data:
     redis:
-      host: ${REDIS_HOST}
-      port: ${REDIS_PORT}
+      host: localhost
+      port: 6379
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: ${MYSQL_URL}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    url: jdbc:mysql://localhost:23306/todo
+    username: root
+    password: 1234
+
   jpa:
     hibernate:
       ddl-auto: update
@@ -36,3 +27,6 @@ logging:
           descriptor:
             sql:
               BasicBinder: trace
+
+server:
+  port: 8081
