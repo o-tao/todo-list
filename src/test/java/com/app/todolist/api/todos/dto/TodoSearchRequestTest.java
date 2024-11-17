@@ -1,7 +1,6 @@
 package com.app.todolist.api.todos.dto;
 
 import com.app.todolist.api.todos.controller.dto.TodoSearchRequest;
-import com.app.todolist.domain.todos.TodoStatus;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
@@ -14,14 +13,14 @@ import java.util.Set;
 class TodoSearchRequestTest {
 
     @Test
-    @DisplayName("memberId가 null일 경우 예외가 발생한다.")
-    public void memberIdNotNullValidTest() {
+    @DisplayName("페이지가 음수 일 경우 예외가 발생한다.")
+    public void pageNegativeValidationTest() {
         // given
         Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+
         TodoSearchRequest searchRequest = new TodoSearchRequest();
-        searchRequest.setTitle("title");
-        searchRequest.setStatus(TodoStatus.TODO);
-        searchRequest.setMemberId(null);
+        searchRequest.setPage(-1);
+        searchRequest.setSize(10);
 
         // when
         Set<ConstraintViolation<TodoSearchRequest>> violations = validator.validate(searchRequest);
@@ -29,19 +28,19 @@ class TodoSearchRequestTest {
         // then
         Assertions.assertThat(violations)
                 .extracting(ConstraintViolation::getMessage)
-                .contains("회원 ID를 입력하세요.")
+                .contains("페이지는 양수여야 합니다.")
                 .hasSize(1);
     }
 
     @Test
-    @DisplayName("memberId가 음수일 경우 예외가 발생한다.")
-    public void memberIdPositiveValidTest() {
+    @DisplayName("데이터 사이즈가 음수 일 경우 예외가 발생한다.")
+    public void sizeNegativeValidationTest() {
         // given
         Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+
         TodoSearchRequest searchRequest = new TodoSearchRequest();
-        searchRequest.setTitle("title");
-        searchRequest.setStatus(TodoStatus.TODO);
-        searchRequest.setMemberId(-1L);
+        searchRequest.setPage(1);
+        searchRequest.setSize(-1);
 
         // when
         Set<ConstraintViolation<TodoSearchRequest>> violations = validator.validate(searchRequest);
@@ -49,28 +48,8 @@ class TodoSearchRequestTest {
         // then
         Assertions.assertThat(violations)
                 .extracting(ConstraintViolation::getMessage)
-                .contains("회원 ID는 양수여야 합니다.")
+                .contains("한 페이지에 조회 할 데이터 수는 양수여야 합니다.")
                 .hasSize(1);
-    }
-
-    @Test
-    @DisplayName("memberId의 값이 정상일 경우 예외가 발생하지 않는다.")
-    public void memberIdValidSuccessTest() {
-        // given
-        Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
-        TodoSearchRequest searchRequest = new TodoSearchRequest();
-        searchRequest.setTitle("title");
-        searchRequest.setStatus(TodoStatus.TODO);
-        searchRequest.setMemberId(1L);
-
-        // when
-        Set<ConstraintViolation<TodoSearchRequest>> violations = validator.validate(searchRequest);
-
-        // then
-        Assertions.assertThat(violations)
-                .extracting(ConstraintViolation::getMessage)
-                .contains()
-                .hasSize(0);
     }
 
 }

@@ -26,7 +26,6 @@ class TodoRequestTest {
     @DisplayName("title을 입력하지 않을 경우 예외가 발생한다.")
     public void titleValidTest() {
         // given
-        todoRequest.setMemberId(1L);
         todoRequest.setTitle(null);
         todoRequest.setContent("tao content");
 
@@ -44,7 +43,6 @@ class TodoRequestTest {
     @DisplayName("title을 입력할 경우 예외가 발생하지 않는다.")
     public void validSuccessTest() {
         // given
-        todoRequest.setMemberId(1L);
         todoRequest.setTitle("tao title");
         todoRequest.setContent("tao content");
 
@@ -62,7 +60,6 @@ class TodoRequestTest {
     @DisplayName("title을 최소 2자리이상 입력하지않으면 예외가 발생한다.")
     public void minTitleTest() {
         // given
-        todoRequest.setMemberId(1L);
         todoRequest.setTitle("t");
         todoRequest.setContent("test content");
 
@@ -80,7 +77,6 @@ class TodoRequestTest {
     @DisplayName("title을 최대 30자리 초과 입력 시 예외가 발생한다.")
     public void maxTitleTest() {
         // given
-        todoRequest.setMemberId(1L);
         todoRequest.setTitle("a".repeat(31));
         todoRequest.setContent("test content");
 
@@ -98,7 +94,6 @@ class TodoRequestTest {
     @DisplayName("title을 Size범위 내에 입력 시 예외가 발생하지 않는다.")
     public void sizeSuccessTest() {
         // given
-        todoRequest.setMemberId(1L);
         todoRequest.setTitle("todo title");
         todoRequest.setContent("test content");
 

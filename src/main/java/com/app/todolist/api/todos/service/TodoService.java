@@ -2,6 +2,7 @@ package com.app.todolist.api.todos.service;
 
 import com.app.todolist.api.members.service.MemberService;
 import com.app.todolist.api.todos.controller.dto.TodoSearchResponse;
+import com.app.todolist.api.todos.service.dto.TodoCreateInfo;
 import com.app.todolist.api.todos.service.dto.TodoUpdateInfo;
 import com.app.todolist.api.todos.service.dto.TodosWithOptions;
 import com.app.todolist.domain.members.Member;
@@ -30,21 +31,23 @@ public class TodoService {
 
 
     @Transactional
-    public Todo createTodo(Long memberId, String title, String content) {
+    public Todo createTodo(TodoCreateInfo todoCreateInfo, Long memberId) {
         Member member = memberService.findMemberById(memberId);
-        return todoRepository.save(Todo.create(member, title, content));
+        return todoRepository.save(Todo.create(member, todoCreateInfo.getTitle(), todoCreateInfo.getContent()));
     }
 
     @Transactional
-    public Todo updateTodo(Long id, TodoUpdateInfo todoUpdateInfo) {
-        Todo todo = findTodoById(id);
+    public Todo updateTodo(Long todoId, TodoUpdateInfo todoUpdateInfo, Long memberId) {
+        Todo todo = findTodoById(todoId);
+        validateTodoOwnership(todo.getMember().getId(), memberId);
         todo.update(todoUpdateInfo.getTitle(), todoUpdateInfo.getContent());
         return todo;
     }
 
     @Transactional
-    public Todo updateTodoStatus(Long id, TodoStatus todoStatus) {
-        Todo todo = findTodoById(id);
+    public Todo updateTodoStatus(Long todoId, TodoStatus todoStatus, Long memberId) {
+        Todo todo = findTodoById(todoId);
+        validateTodoOwnership(todo.getMember().getId(), memberId);
         todo.updateStatus(todoStatus);
         return todo;
     }
@@ -61,9 +64,21 @@ public class TodoService {
         );
     }
 
-    public Todo findTodoById(Long id) {
+    public Todo getTodoDetails(Long todoId, Long memberId) {
+        Todo todo = findTodoById(todoId);
+        validateTodoOwnership(todo.getMember().getId(), memberId);
+        return todo;
+    }
+
+    private Todo findTodoById(Long id) {
         return todoRepository.findById(id).orElseThrow(()
                 -> new TodoApplicationException(ErrorCode.TODO_NOT_FOUND)
         );
+    }
+
+    private void validateTodoOwnership(Long todoMemberId, Long memberId) {
+        if (!todoMemberId.equals(memberId)) {
+            throw new TodoApplicationException(ErrorCode.PERMISSION_DENIED);
+        }
     }
 }

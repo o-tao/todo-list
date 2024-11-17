@@ -1,8 +1,10 @@
 package com.app.todolist.api.todos.service;
 
 import com.app.todolist.api.todos.controller.dto.TodoSearchResponse;
+import com.app.todolist.api.todos.service.dto.TodoCreateInfo;
 import com.app.todolist.api.todos.service.dto.TodoUpdateInfo;
 import com.app.todolist.api.todos.service.dto.TodosWithOptions;
+import com.app.todolist.config.redis.dto.MemberSession;
 import com.app.todolist.domain.members.Member;
 import com.app.todolist.domain.members.repository.MemberRepository;
 import com.app.todolist.domain.todos.Todo;
@@ -49,18 +51,21 @@ class TodoServiceTest {
         return todoRepository.save(todo);
     }
 
+    private MemberSession createMemberSession(Long memberId) {
+        return new MemberSession(memberId);
+    }
+
     @Test
     @Transactional
     @DisplayName("존재하는 회원이 Todo생성 시 Todo가 저장된다.")
     public void createTodoTest() {
         // given
         Member savedMember = createMember();
-        String title = "tao title";
-        String content = "tao content";
+        TodoCreateInfo todoCreateInfo = new TodoCreateInfo("tao title", "tao content");
         Long memberId = savedMember.getId();
 
         // when
-        Todo createTodo = todoService.createTodo(memberId, title, content);
+        Todo createTodo = todoService.createTodo(todoCreateInfo, memberId);
 
         // then
         Todo findTodo = todoRepository.findAll().stream().findFirst().orElseThrow();
@@ -73,14 +78,13 @@ class TodoServiceTest {
 
     @Test
     @DisplayName("존재하지 않는 회원이 Todo생성 시 예외가 발생한다.")
-    public void validateMemberTest() {
+    public void createTodoByValidateMemberTest() {
         // given
-        String title = "tao title";
-        String content = "tao content";
+        TodoCreateInfo todoCreateInfo = new TodoCreateInfo("tao title", "tao content");
 
         // when
         TodoApplicationException exception = assertThrows(TodoApplicationException.class,
-                () -> todoService.createTodo(-1L, title, content));
+                () -> todoService.createTodo(todoCreateInfo, -1L));
 
         // then
         assertThat(exception).isInstanceOf(TodoApplicationException.class);
@@ -176,17 +180,60 @@ class TodoServiceTest {
     }
 
     @Test
-    @DisplayName("존재하는 todo의 title만 변경 될 경우 title만 수정된다.")
+    @DisplayName("회원이 자신이 작성한 todo 수정 시 정상적으로 수정된다.")
+    public void todoUpdateByValidMemberTest() {
+        // given
+        Member savedMember = createMember();
+        Todo existingTodo = createTodo(savedMember, "todo-list", "hello");
+
+        TodoUpdateInfo updateInfo = new TodoUpdateInfo("title update", "content update");
+
+        MemberSession memberSession = createMemberSession(savedMember.getId());
+
+        // when
+        todoService.updateTodo(existingTodo.getId(), updateInfo, memberSession.getMemberId());
+
+        // then
+        Todo updatedTodo = todoRepository.findById(existingTodo.getId()).orElseThrow();
+        assertEquals(updateInfo.getTitle(), updatedTodo.getTitle());
+        assertEquals(updateInfo.getContent(), updatedTodo.getContent());
+    }
+
+    @Test
+    @DisplayName("회원이 다른 사용자의 todo를 수정 시 예외가 발생한다.")
+    public void todoUpdateByInvalidMemberTest() {
+        // given
+        Member savedMember = createMember();
+        Todo existingTodo = createTodo(savedMember, "todo-list", "hello");
+
+        TodoUpdateInfo updateInfo = new TodoUpdateInfo("title update", "content update");
+
+        MemberSession memberSession = createMemberSession(-1L);
+
+        // when
+        TodoApplicationException exception = assertThrows(TodoApplicationException.class,
+                () -> todoService.updateTodo(existingTodo.getId(), updateInfo, memberSession.getMemberId()));
+
+        // then
+        assertThat(exception).isInstanceOf(TodoApplicationException.class);
+        assertThat(exception.getExceptionMessage()).isEqualTo("이 작업을 수행할 권한이 없습니다.");
+    }
+
+    @Test
+    @DisplayName("Todo의 title을 수정한다.")
     public void todoTitleUpdateTest() {
         // given
         Member savedMember = createMember();
         Todo existingTodo = createTodo(savedMember, "todo-list", "hello");
 
+        MemberSession memberSession = createMemberSession(savedMember.getId());
+
         Long todoId = existingTodo.getId();
         TodoUpdateInfo updateInfo = new TodoUpdateInfo("title update", "hello");
 
+
         // when
-        todoService.updateTodo(todoId, updateInfo);
+        todoService.updateTodo(todoId, updateInfo, memberSession.getMemberId());
 
         // then
         Todo updatedTodo = todoRepository.findById(todoId).orElseThrow();
@@ -195,17 +242,19 @@ class TodoServiceTest {
     }
 
     @Test
-    @DisplayName("존재하는 todo의 content만 변경 될 경우 content만 수정된다.")
+    @DisplayName("Todo의 content를 수정한다.")
     public void todoContentUpdateTest() {
         // given
         Member savedMember = createMember();
         Todo existingTodo = createTodo(savedMember, "todo-list", "hello");
 
+        MemberSession memberSession = createMemberSession(savedMember.getId());
+
         Long todoId = existingTodo.getId();
         TodoUpdateInfo updateInfo = new TodoUpdateInfo("todo-list", "content update");
 
         // when
-        todoService.updateTodo(todoId, updateInfo);
+        todoService.updateTodo(todoId, updateInfo, memberSession.getMemberId());
 
         // then
         Todo updatedTodo = todoRepository.findById(todoId).orElseThrow();
@@ -214,37 +263,20 @@ class TodoServiceTest {
     }
 
     @Test
-    @DisplayName("존재하는 todo의 title과 content가 모두 변경될 경우 모두 수정된다.")
-    public void todoTitleAndContentUpdateTest() {
-        // given
-        Member savedMember = createMember();
-        Todo existingTodo = createTodo(savedMember, "todo-list", "hello");
-
-        Long todoId = existingTodo.getId();
-        TodoUpdateInfo updateInfo = new TodoUpdateInfo("title update", "content update");
-
-        // when
-        todoService.updateTodo(todoId, updateInfo);
-
-        // then
-        Todo updatedTodo = todoRepository.findById(todoId).orElseThrow();
-        assertEquals(updateInfo.getTitle(), updatedTodo.getTitle());
-        assertEquals(updateInfo.getContent(), updatedTodo.getContent());
-    }
-
-    @Test
-    @DisplayName("존재하는 todo가 수정 될 경우 todo를 수정 한 시간이 updatedAt에 저장된다.")
+    @DisplayName("Todo의 수정 시간이 updatedAt에 저장된다.")
     public void todoUpdatedAtTest() {
         // given
         Member savedMember = createMember();
         Todo existingTodo = createTodo(savedMember, "todo-list", "hello");
+
+        MemberSession memberSession = createMemberSession(savedMember.getId());
 
         Long todoId = existingTodo.getId();
         LocalDateTime previousUpdatedAt = existingTodo.getUpdatedAt();
         TodoUpdateInfo updateInfo = new TodoUpdateInfo("title update", "content update");
 
         // when
-        todoService.updateTodo(todoId, updateInfo);
+        todoService.updateTodo(todoId, updateInfo, memberSession.getMemberId());
 
         // then
         Todo updatedTodo = todoRepository.findById(todoId).orElseThrow();
@@ -258,9 +290,11 @@ class TodoServiceTest {
         // given
         TodoUpdateInfo updateInfo = new TodoUpdateInfo("title update", "content update");
 
+        MemberSession memberSession = createMemberSession(1L);
+
         // when
         TodoApplicationException exception = assertThrows(TodoApplicationException.class,
-                () -> todoService.updateTodo(-1L, updateInfo));
+                () -> todoService.updateTodo(-1L, updateInfo, memberSession.getMemberId()));
 
         // then
         assertThat(exception).isInstanceOf(TodoApplicationException.class);
@@ -268,14 +302,16 @@ class TodoServiceTest {
     }
 
     @Test
-    @DisplayName("생성된 todo에 대해 단일 건으로 상세조회를 할 수 있다.")
+    @DisplayName("회원이 생성한 본인의 todo에 대해 단일 건으로 상세조회를 할 수 있다.")
     public void findTodoByDetailsTest() {
         // given
         Member savedMember = createMember();
         Todo existingTodo = createTodo(savedMember, "todo-list", "hello");
 
+        MemberSession memberSession = createMemberSession(savedMember.getId());
+
         // when
-        Todo todoDetails = todoService.findTodoById(existingTodo.getId());
+        Todo todoDetails = todoService.getTodoDetails(existingTodo.getId(), memberSession.getMemberId());
 
         // then
         assertThat(existingTodo.getTitle()).isEqualTo(todoDetails.getTitle());
@@ -286,11 +322,30 @@ class TodoServiceTest {
     }
 
     @Test
-    @DisplayName("존재하지 않는 todo 조회 시 예외가 발생한다.")
-    public void findTodoByDetailsValidateTest() {
+    @DisplayName("회원이 다른 사용자의 todo 상세 조회 시 예외가 발생한다.")
+    public void findTodoByDetailsByInvalidMemberTest() {
+        // given
+        Member savedMember = createMember();
+        Todo existingTodo = createTodo(savedMember, "todo-list", "hello");
+
         // when
         TodoApplicationException exception = assertThrows(TodoApplicationException.class,
-                () -> todoService.findTodoById(-1L));
+                () -> todoService.getTodoDetails(existingTodo.getId(), -1L));
+
+        // then
+        assertThat(exception).isInstanceOf(TodoApplicationException.class);
+        assertThat(exception.getExceptionMessage()).isEqualTo("이 작업을 수행할 권한이 없습니다.");
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 todo 상세 조회 시 예외가 발생한다.")
+    public void findTodoByDetailsValidateTest() {
+        // given
+        MemberSession memberSession = createMemberSession(1L);
+
+        // when
+        TodoApplicationException exception = assertThrows(TodoApplicationException.class,
+                () -> todoService.getTodoDetails(-1L, memberSession.getMemberId()));
 
         // then
         assertThat(exception).isInstanceOf(TodoApplicationException.class);
@@ -298,14 +353,16 @@ class TodoServiceTest {
     }
 
     @Test
-    @DisplayName("존재하는 todo의 상태를 변경할 수 있다.")
+    @DisplayName("회원이 본인의 todo의 상태 변경 시 정상적으로 변경된다.")
     public void todoStatusUpdateTest() {
         // given
         Member savedMember = createMember();
         Todo existingTodo = createTodo(savedMember, "todo-list", "hello");
 
+        MemberSession memberSession = createMemberSession(savedMember.getId());
+
         // when
-        todoService.updateTodoStatus(existingTodo.getId(), TodoStatus.DONE);
+        todoService.updateTodoStatus(existingTodo.getId(), TodoStatus.DONE, memberSession.getMemberId());
 
         // then
         Todo updatedTodo = todoRepository.findById(existingTodo.getId()).orElseThrow();
@@ -313,7 +370,25 @@ class TodoServiceTest {
     }
 
     @Test
-    @DisplayName("존재하는 todo의 상태가 변경 될 경우 변경 된 시간이 updatedAt에 저장된다.")
+    @DisplayName("회원이 다른 사용자의 todo 상태 변경 시 예외가 발생한다.")
+    public void todoStatusUpdateByInvalidMemberTest() {
+        // given
+        Member savedMember = createMember();
+        Todo existingTodo = createTodo(savedMember, "todo-list", "hello");
+
+        MemberSession memberSession = createMemberSession(-1L);
+
+        // when
+        TodoApplicationException exception = assertThrows(TodoApplicationException.class,
+                () -> todoService.updateTodoStatus(existingTodo.getId(), TodoStatus.DONE, memberSession.getMemberId()));
+
+        // then
+        assertThat(exception).isInstanceOf(TodoApplicationException.class);
+        assertThat(exception.getExceptionMessage()).isEqualTo("이 작업을 수행할 권한이 없습니다.");
+    }
+
+    @Test
+    @DisplayName("Todo의 상태 변경 된 시간이 updatedAt에 저장된다.")
     public void todoStatusUpdatedAtTest() {
         // given
         Member savedMember = createMember();
@@ -321,8 +396,10 @@ class TodoServiceTest {
 
         LocalDateTime previousUpdatedAt = existingTodo.getUpdatedAt();
 
+        MemberSession memberSession = createMemberSession(savedMember.getId());
+
         // when
-        todoService.updateTodoStatus(existingTodo.getId(), TodoStatus.DONE);
+        todoService.updateTodoStatus(existingTodo.getId(), TodoStatus.DONE, memberSession.getMemberId());
 
         // then
         Todo updatedTodo = todoRepository.findById(existingTodo.getId()).orElseThrow();
