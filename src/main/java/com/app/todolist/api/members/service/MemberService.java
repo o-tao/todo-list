@@ -43,7 +43,7 @@ public class MemberService {
 
     public Cookie logout(String sessionId) {
         sessionService.deleteSession(sessionId);
-        return CookieUtil.deleteCookie(sessionId);
+        return CookieUtil.deleteCookie();
     }
 
     private void validateMember(String email) {

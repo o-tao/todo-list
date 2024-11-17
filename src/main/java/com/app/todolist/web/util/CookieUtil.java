@@ -29,7 +29,7 @@ public class CookieUtil {
         return cookie;
     }
 
-    public static Cookie deleteCookie(String sessionId) {
+    public static Cookie deleteCookie() {
         Cookie cookie = new Cookie(COOKIE_NAME, null);
         cookie.setMaxAge(0);
         cookie.setPath("/");
