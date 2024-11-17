@@ -111,7 +111,7 @@ class MemberServiceTest {
         MemberSession memberSession = redisTemplate.opsForValue().get(sessionKey);
 
         assertNotNull(memberSession);
-        assertEquals(member.getId(), memberSession.getId());
+        assertEquals(member.getId(), memberSession.getMemberId());
     }
 
     @Test

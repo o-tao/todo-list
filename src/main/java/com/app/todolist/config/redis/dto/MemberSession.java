@@ -6,9 +6,9 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class MemberSession {
-    private Long id;
+    private Long memberId;
 
-    public MemberSession(Long id) {
-        this.id = id;
+    public MemberSession(Long memberId) {
+        this.memberId = memberId;
     }
 }
