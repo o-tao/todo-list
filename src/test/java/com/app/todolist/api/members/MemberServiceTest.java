@@ -3,6 +3,7 @@ package com.app.todolist.api.members;
 import com.app.todolist.api.members.service.MemberService;
 import com.app.todolist.api.members.service.dto.MemberCreateInfo;
 import com.app.todolist.api.members.service.dto.MemberLoginInfo;
+import com.app.todolist.api.session.service.SessionService;
 import com.app.todolist.config.redis.dto.MemberSession;
 import com.app.todolist.domain.members.Member;
 import com.app.todolist.domain.members.repository.MemberRepository;
@@ -23,12 +24,17 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 class MemberServiceTest {
 
+    private final static String SESSION_PREFIX = "TODO_SESSION";
+    private final static String COOKIE_NAME = "SESSION";
+
     @Autowired
     private MemberService memberService;
     @Autowired
     private MemberRepository memberRepository;
     @Autowired
     private RedisTemplate<String, MemberSession> redisTemplate;
+    @Autowired
+    private SessionService sessionService;
 
     @AfterEach
     public void clear() {
@@ -105,13 +111,11 @@ class MemberServiceTest {
         // when
         Cookie cookie = memberService.login(memberLoginInfo);
         String sessionId = cookie.getValue();
-        String sessionKey = "TODO_SESSION:" + sessionId;
 
         // then
-        MemberSession memberSession = redisTemplate.opsForValue().get(sessionKey);
-
-        assertNotNull(memberSession);
-        assertEquals(member.getId(), memberSession.getMemberId());
+        MemberSession memberSession = sessionService.findSession(sessionId);
+        assertThat(memberSession).isNotNull();
+        assertThat(member.getId()).isEqualTo(memberSession.getMemberId());
     }
 
     @Test
@@ -126,7 +130,7 @@ class MemberServiceTest {
 
         // then
         assertNotNull(cookie);
-        assertEquals("SESSION", cookie.getName());
+        assertEquals(COOKIE_NAME, cookie.getName());
         assertEquals(1800, cookie.getMaxAge());
         assertTrue(cookie.isHttpOnly());
         assertEquals("/", cookie.getPath());
@@ -153,14 +157,14 @@ class MemberServiceTest {
     public void logoutByCookieExpirationTest() {
         // given
         String sessionId = "testSessionId";
-        redisTemplate.opsForValue().set("TODO_SESSION:" + sessionId, new MemberSession(1L));
+        redisTemplate.opsForValue().set(SESSION_PREFIX + sessionId, new MemberSession(1L));
 
         // when
         Cookie cookie = memberService.logout(sessionId);
 
         // then
         assertThat(cookie).isNotNull();
-        assertThat("SESSION").isEqualTo(cookie.getName());
+        assertThat(COOKIE_NAME).isEqualTo(cookie.getName());
         assertThat(0).isEqualTo(cookie.getMaxAge());
         assertThat(cookie.getValue()).isNull();
     }
@@ -170,13 +174,13 @@ class MemberServiceTest {
     public void logoutBySessionDeletionTest() {
         // given
         String sessionId = "testSessionId";
-        redisTemplate.opsForValue().set("TODO_SESSION:" + sessionId, new MemberSession(1L));
+        redisTemplate.opsForValue().set(SESSION_PREFIX + sessionId, new MemberSession(1L));
 
         // when
         memberService.logout(sessionId);
 
         // then
-        MemberSession memberSession = redisTemplate.opsForValue().get("TODO_SESSION:" + sessionId);
+        MemberSession memberSession = sessionService.findSession(sessionId);
         assertThat(memberSession).isNull();
     }
 }
