@@ -23,7 +23,7 @@ public class MemberController {
 
     @PostMapping
     public MemberResponse createMember(@RequestBody @Valid MemberRequest memberRequest) {
-        Member member = memberService.createMember(memberRequest.toEntity());
+        Member member = memberService.createMember(memberRequest.toCreate());
         return MemberResponse.of(member);
     }
 
