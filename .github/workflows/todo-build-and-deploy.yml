@@ -34,8 +34,30 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
+      - name: Install Docker Compose
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker-compose
+
+      - name: Set up Docker Compose
+        run: |
+          docker-compose up -d
+          docker-compose ps
+
+      - name: Wait for services to be ready
+        run: |
+          until docker-compose exec -T mysql mysqladmin ping -h"127.0.0.1" --silent; do
+            echo "Waiting for MySQL to be ready..."
+            sleep 5
+          done
+          sleep 10
+
       - name: Build with Gradle (prod profile)
         run: ./gradlew clean build -Dspring.profiles.active=prod -Duser.language=ko -Duser.country=KR
+
+      - name: Tear down Docker Compose
+        if: always()
+        run: docker-compose down
 
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
