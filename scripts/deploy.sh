@@ -6,7 +6,7 @@ export DB_PASSWORD=$DB_PASSWORD
 export REDIS_HOST=$REDIS_HOST
 export REDIS_PORT=$REDIS_PORT
 
-DEPLOY_PATH=/home/ubuntu/todo
+DEPLOY_PATH=/home/ubuntu/todo/
 mkdir -p $DEPLOY_PATH
 
 BUILD_JAR=$(ls /home/ubuntu/todo/build/libs/*.jar)
@@ -14,7 +14,6 @@ JAR_NAME=$(basename $BUILD_JAR)
 echo ">>> build 파일명: $JAR_NAME" >> /home/ubuntu/deploy.log
 
 echo ">>> build 파일 복사" >> /home/ubuntu/deploy.log
-DEPLOY_PATH=/home/ubuntu/todo/
 cp $BUILD_JAR $DEPLOY_PATH
 
 echo ">>> 현재 실행중인 애플리케이션 pid 확인 후 일괄 종료" >> /home/ubuntu/deploy.log
