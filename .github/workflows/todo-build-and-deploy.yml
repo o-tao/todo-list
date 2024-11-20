@@ -1,0 +1,64 @@
+name: TodoBuildAndDeploy
+
+on:
+  push:
+    branches:
+      - main
+      - issue/**
+
+env:
+  MYSQL_URL: ${{ secrets.MYSQL_URL }}
+  DB_USERNAME: ${{ secrets.DB_USERNAME }}
+  DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+  REDIS_HOST: ${{ secrets.REDIS_HOST }}
+  REDIS_PORT: ${{ secrets.REDIS_PORT }}
+  AWS_REGION: ap-northeast-2
+  AWS_S3_BUCKET: todo-deploy-bucket1
+  AWS_CODE_DEPLOY_APPLICATION: todo-list-application
+  AWS_CODE_DEPLOY_GROUP: todo-deployment-group
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Build with Gradle (prod profile)
+        run: ./gradlew clean build -Dspring.profiles.active=prod -Duser.language=ko -Duser.country=KR
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew
+        shell: bash
+
+      - name: Make Zip file
+        run: zip -r ./$GITHUB_SHA.zip ./build/libs/*.jar
+        shell: bash
+
+      - name: AWS credential setting
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-region: ${{ env.AWS_REGION }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - name: Upload to S3
+        run: aws s3 cp ap-northeast-2 ./$GITHUB_SHA.zip s3://$AWS_S3_BUCKET/$GITHUB_SHA.zip
+
+      - name: EC2 Deploy
+        run: aws deploy create-deployment
+          --application-name ${{ env.AWS_CODE_DEPLOY_APPLICATION }}
+          --deployment-config-name CodeDeployDefault.AllAtOnce
+          --deployment-group-name ${{ env.AWS_CODE_DEPLOY_GROUP }}
+          --s3-location bucket=$AWS_S3_BUCKET,key=$GITHUB_SHA.zip,bundleType=zip
+
