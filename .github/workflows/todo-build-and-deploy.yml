@@ -6,17 +6,6 @@ on:
       - main
       - issue/**
 
-env:
-  MYSQL_URL: ${{ secrets.MYSQL_URL }}
-  DB_USERNAME: ${{ secrets.DB_USERNAME }}
-  DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-  REDIS_HOST: ${{ secrets.REDIS_HOST }}
-  REDIS_PORT: ${{ secrets.REDIS_PORT }}
-  AWS_REGION: ap-northeast-2
-  AWS_S3_BUCKET: todo-deploy-bucket1
-  AWS_CODE_DEPLOY_APPLICATION: todo-list-application
-  AWS_CODE_DEPLOY_GROUP: todo-deployment-group
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -33,6 +22,17 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
+
+      - name: Set Yaml
+        uses: microsoft/variable-substitution@v1
+        with:
+          files: ./src/main/resources/application-prod.yml
+        env:
+          spring.datasource.url: ${{ secrets.MYSQL_URL }}
+          spring.datasource.username: ${{ secrets.DB_USERNAME }}
+          spring.datasource.password: ${{ secrets.DB_PASSWORD }}
+          spring.data.redis.host: ${{ secrets.REDIS_HOST }}
+          spring.data.redis.port: ${{ secrets.REDIS_PORT }}
 
       - name: Install Docker Compose
         run: |
@@ -70,17 +70,17 @@ jobs:
       - name: AWS credential setting
         uses: aws-actions/configure-aws-credentials@v3
         with:
-          aws-region: ${{ env.AWS_REGION }}
+          aws-region: ${{ secrets.AWS_REGION }}
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
       - name: Upload to S3
-        run: aws s3 cp ./$GITHUB_SHA.zip s3://$AWS_S3_BUCKET/$GITHUB_SHA.zip
+        run: aws s3 cp ./$GITHUB_SHA.zip s3://${{ secrets.AWS_S3_BUCKET }}/$GITHUB_SHA.zip
 
       - name: EC2 Deploy
         run: aws deploy create-deployment
-          --application-name ${{ env.AWS_CODE_DEPLOY_APPLICATION }}
+          --application-name ${{ secrets.AWS_CODE_DEPLOY_APPLICATION }}
           --deployment-config-name CodeDeployDefault.AllAtOnce
-          --deployment-group-name ${{ env.AWS_CODE_DEPLOY_GROUP }}
-          --s3-location bucket=$AWS_S3_BUCKET,key=$GITHUB_SHA.zip,bundleType=zip
+          --deployment-group-name ${{ secrets.AWS_CODE_DEPLOY_GROUP }}
+          --s3-location bucket=${{ secrets.AWS_S3_BUCKET }},key=$GITHUB_SHA.zip,bundleType=zip
 

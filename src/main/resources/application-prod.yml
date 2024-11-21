@@ -5,14 +5,14 @@ spring:
 
   data:
     redis:
-      host: ${secrets.MYSQL_URL}
-      port: ${secrets.REDIS_PORT}
+      host: ${MYSQL_URL}
+      port: ${REDIS_PORT}
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: ${secrets.MYSQL_URL}
-    username: ${secrets.DB_USERNAME}
-    password: ${secrets.DB_PASSWORD}
+    url: ${MYSQL_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
 
   jpa:
     hibernate:
