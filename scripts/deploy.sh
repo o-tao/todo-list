@@ -1,11 +1,16 @@
 #!/bin/bash
 
-BUILD_JAR=$(ls /home/ubuntu/todo-list/build/libs/*.jar)
+DEPLOY_PATH=/home/ubuntu/todo/
+echo "배포 경로: $DEPLOY_PATH" >> /home/ubuntu/deploy.log
+
+mkdir -p $DEPLOY_PATH
+echo "디렉토리 생성 완료" >> /home/ubuntu/deploy.log
+
+BUILD_JAR=$(ls /home/ubuntu/todo/build/libs/*.jar)
 JAR_NAME=$(basename "$BUILD_JAR")
 echo ">>> build 파일명: $JAR_NAME" >> /home/ubuntu/deploy.log
 
 echo ">>> build 파일 복사" >> /home/ubuntu/deploy.log
-DEPLOY_PATH=/home/ubuntu/todo-list/
 cp "$BUILD_JAR" "$DEPLOY_PATH"
 
 echo ">>> 현재 실행중인 애플리케이션 pid 확인 후 일괄 종료" >> /home/ubuntu/deploy.log
