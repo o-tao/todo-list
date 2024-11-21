@@ -11,7 +11,7 @@ JAR_NAME=$(basename "$BUILD_JAR")
 echo ">>> build 파일명: $JAR_NAME" >> /home/ubuntu/deploy.log
 
 echo ">>> build 파일 복사" >> /home/ubuntu/deploy.log
-cp "$BUILD_JAR" $DEPLOY_PATH 2>> /home/ubuntu/deploy_err.log
+cp $BUILD_JAR $DEPLOY_PATH 2>> /home/ubuntu/deploy_err.log
 
 echo ">>> 현재 실행중인 애플리케이션 pid 확인 후 일괄 종료" >> /home/ubuntu/deploy.log
 sudo ps -ef | grep java | awk '{print $2}' | xargs kill -15 2>> /home/ubuntu/deploy_err.log
