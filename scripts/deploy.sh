@@ -2,6 +2,14 @@
 
 TIME=$(date "+%Y-%m-%d %H:%M:%S")
 
+{
+echo "[$TIME] MYSQL_URL: $MYSQL_URL"
+echo "[$TIME] DB_USERNAME: $DB_USERNAME"
+echo "[$TIME] DB_PASSWORD: $DB_PASSWORD"
+echo "[$TIME] REDIS_HOST: $REDIS_HOST"
+echo "[$TIME] REDIS_PORT: $REDIS_PORT"
+} >> /home/ubuntu/deploy.log
+
 DEPLOY_PATH=/home/ubuntu/todo/
 echo "[$TIME] 배포 경로: $DEPLOY_PATH" >> /home/ubuntu/deploy.log
 
