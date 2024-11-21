@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DEPLOY_PATH=/home/ubuntu/todo/
+DEPLOY_PATH=/home/ubuntu/todo
 echo "배포 경로: $DEPLOY_PATH" >> /home/ubuntu/deploy.log
 
 mkdir -p $DEPLOY_PATH
@@ -23,7 +23,7 @@ echo ">>> 환경 변수 파일 로드 및 환경 변수 설정 후 삭제" >> /h
 export $(cat $DEPLOY_PATH/deploy.env | xargs) 2>> /home/ubuntu/deploy_err.log
 rm $DEPLOY_PATH/deploy.env 2>> /home/ubuntu/deploy_err.log
 
-DEPLOY_JAR=$DEPLOY_PATH$JAR_NAME
+DEPLOY_JAR=$DEPLOY_PATH/$JAR_NAME
 echo ">>> DEPLOY_JAR 배포"    >> /home/ubuntu/deploy.log
 echo ">>> $DEPLOY_JAR의 $JAR_NAME를 실행합니다" >> /home/ubuntu/deploy.log
 nohup java -jar -Dspring.profiles.active=prod $DEPLOY_JAR >> /home/ubuntu/deploy.log 2>> /home/ubuntu/deploy_err.log &
