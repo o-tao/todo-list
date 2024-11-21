@@ -74,18 +74,8 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-      - name: Create environment variables file
-        run: |
-          echo "MYSQL_URL=${{ secrets.MYSQL_URL }}" > deploy.env
-          echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> deploy.env
-          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> deploy.env
-          echo "REDIS_HOST=${{ secrets.REDIS_HOST }}" >> deploy.env
-          echo "REDIS_PORT=${{ secrets.REDIS_PORT }}" >> deploy.env
-
       - name: Upload to S3
-        run: |
-          aws s3 cp ./$GITHUB_SHA.zip s3://$AWS_S3_BUCKET/$GITHUB_SHA.zip
-          aws s3 cp ./deploy.env s3://$AWS_S3_BUCKET/$GITHUB_SHA.env
+        run: aws s3 cp ./$GITHUB_SHA.zip s3://$AWS_S3_BUCKET/$GITHUB_SHA.zip
 
       - name: EC2 Deploy
         run: aws deploy create-deployment
