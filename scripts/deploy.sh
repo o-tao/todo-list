@@ -1,10 +1,10 @@
 #!/bin/bash
 
 DEPLOY_PATH=/home/ubuntu/todo
-echo "배포 경로: $DEPLOY_PATH" >> /home/ubuntu/deploy.log
+echo ">>> 배포 경로: $DEPLOY_PATH" >> /home/ubuntu/deploy.log
 
 mkdir -p $DEPLOY_PATH
-echo "디렉토리 생성 완료" >> /home/ubuntu/deploy.log
+echo ">>> 디렉토리 생성 완료" >> /home/ubuntu/deploy.log
 
 BUILD_JAR=$(ls /home/ubuntu/todo/build/libs/*.jar)
 JAR_NAME=$(basename $BUILD_JAR)
