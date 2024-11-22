@@ -45,7 +45,7 @@
 
 API 명세서는 **Postman**을 통해 관리되며, 아래 링크에서 확인할 수 있습니다.
 
-<a href="https://documenter.getpostman.com/view/38357139/2sAYBSktrc" target="_blank">API 명세서 링크</a>
+[API 명세서 링크](https://documenter.getpostman.com/view/38357139/2sAYBSktrc)
 
 ## 🚀 프로젝트 실행 방법
 
