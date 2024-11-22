@@ -5,7 +5,7 @@ spring:
 
   data:
     redis:
-      host: ${MYSQL_URL}
+      host: ${REDIS_URL}
       port: ${REDIS_PORT}
 
   datasource:
