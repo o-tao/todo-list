@@ -30,6 +30,10 @@ public class SessionService {
     }
 
     public MemberSession findSession(String sessionId) {
-        return redisTemplate.opsForValue().get(SESSION_PREFIX + sessionId);
+        MemberSession memberSession = redisTemplate.opsForValue().get(SESSION_PREFIX + sessionId);
+        if (memberSession != null) {
+            redisTemplate.expire(SESSION_PREFIX + sessionId, SESSION_TIMEOUT, TimeUnit.MINUTES);
+        }
+        return memberSession;
     }
 }
