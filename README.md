@@ -27,14 +27,19 @@
 
 ## 🛠️ 기술 스택
 
-- **언어** : Java
-- **프레임워크** : Spring
+- **언어**
+    - Java
+- **프레임워크**
+    - Spring
 - **데이터베이스**
     - MySQL
     - Redis
     - H2 (테스트 환경)
-- **테스트** : JUnit5
-- **ORM** : Spring Data JPA, QueryDSL
+- **테스트**
+    - JUnit5
+- **ORM**
+    - Spring Data JPA
+    - QueryDSL
 - **배포 환경**
     - GitHub Actions: CI/CD 자동화
     - AWS
@@ -43,7 +48,8 @@
         - ElastiCache : Redis 캐시
         - S3 : 파일 저장
         - CodeDeploy : 배포 자동화
-- **컨테이너화** : Docker Compose (개발 환경)
+- **컨테이너화**
+    - Docker Compose (개발 환경)
 
 ## 📚 API 명세서
 
