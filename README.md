@@ -5,13 +5,6 @@
 이 프로젝트는 **백엔드 REST API** 기반으로 구현된 **Todo-list 관리 애플리케이션**입니다.   
 사용자가 할 일을 생성, 수정, 검색할 수 있는 기능을 제공하며, Github Actions를 통한 **CI/CD 자동화**와 **AWS**를 활용한 배포 환경이 구축되어 있습니다.
 
-- [x] #24
-- [x] https://github.com/o-tao/todo-list/issues/24
-
-## Issues
-
-![GitHub issues](https://img.shields.io/github/issues/o-tao/todo-list)
-
 ## 📌 주요 기능
 
 - ### 사용자 관리
