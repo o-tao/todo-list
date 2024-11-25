@@ -26,7 +26,7 @@ public class TodoSearchResponse {
         return TodoSearchResponse.builder()
                 .memberId(todo.getMember().getId())
                 .title(todo.getTitle())
-                .status(TodoStatus.TODO)
+                .status(todo.getStatus())
                 .createdAt(todo.getCreatedAt())
                 .updatedAt(todo.getUpdatedAt())
                 .build();
