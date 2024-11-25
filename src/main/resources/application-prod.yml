@@ -7,7 +7,6 @@ spring:
     redis:
       host: ${REDIS_HOST}
       port: ${REDIS_PORT}
-      password: ${REDIS_PASSWORD}
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -18,6 +17,11 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
+    properties:
+      hibernate:
+        show_sql: false
+        format_sql: false
+        dialect: org.hibernate.dialect.MySQL8Dialect
 
 logging:
   level:
